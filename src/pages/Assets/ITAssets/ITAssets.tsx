@@ -1,0 +1,335 @@
+import { useState, useContext, useEffect } from "react";
+import { Table, Popconfirm, Button,ConfigProvider  } from "antd";
+import { useTheme } from "../../../context/ThemeContext";
+import {AuthContext} from "../../../context/AuthContext"
+import ItForm from "./ITForm";
+
+const darkTheme = {
+  token: {
+    colorBgContainer: '#202a3f',
+    colorText: '#ffffff',
+    colorBorder: '#434343',
+    colorBgElevated: '#2a2a2a',
+  },
+};
+interface Asset {
+  key: string;
+  name: string;
+  categoryName: string;
+  modelNumber: string;
+  serialNumber: string;
+  purchaseDate: string;
+  purchasePrice: number;
+  warrantyExpiryDate: string;
+  assignedUserName: string;
+  locationName: string;
+  supplierNames: string;
+  status: string;
+}
+
+interface Location {
+  id: string;
+  name: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  serialCode: string;
+}
+
+interface Manufacturer {
+  id: string;
+  name: string;
+}
+
+interface Supplier {
+  id: string;
+  email: string;
+}
+
+interface User {
+  userId: string;
+  firstName: string;
+}
+
+const ItAssets: React.FC = () => {
+const {theme}=useTheme()
+const { token } = useContext(AuthContext);
+
+ 
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [allLocations, setAllLocations] = useState<Location[]>([]);
+  const [allCategory, setAllCategory] = useState<Category[]>([]);
+  const [allManufacturers, setAllManufacturers] = useState<Manufacturer[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [allData, setAllData] = useState<Asset[]>([]);
+
+  const getUsers = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5243/api/Auth/AllUsers/AllUsers",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const users: User[] = await res.json();
+      setAllUsers(users);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAllAssets = async () => {
+    try {
+      const res = await fetch("http://localhost:5243/api/Asset/GetAllAssets", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const data: Asset[] = await res.json();
+      const dataWithKey = data.map((obj) => ({ ...obj, key: obj.id }));
+      setAllData(dataWithKey);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getLocations = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5243/api/Location/GetAllLocations/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const data: Location[] = await res.json();
+      setAllLocations(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAllCategory = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5243/api/Category/GetAllCategories/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const data: Category[] = await res.json();
+      const dataWithKey = data.map((obj) => ({ ...obj, key: obj.id }));
+      setAllCategory(dataWithKey);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+useEffect(()=>{
+getAllAssets()
+},[])
+  const getAllManufacturers = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5243/api/Manufacture/GetAllManufacture/all",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const data: Manufacturer[] = await res.json();
+      const dataWithKey = data.map((obj) => ({ ...obj, key: obj.id }));
+      setAllManufacturers(dataWithKey);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getSuppliers = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5243/api/Supplier/GetAllSuppliers",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const data: Supplier[] = await res.json();
+      setSuppliers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFetchInForm = async () => {
+    setShowForm(true);
+    getUsers();
+    getLocations();
+    getAllCategory();
+    getSuppliers();
+    getAllManufacturers();
+  };
+
+  const handleAddAsset = async (values: any) => {
+    const formattedValues = {
+      ...values,
+      PurchaseDate: values.PurchaseDate?.format("YYYY-MM-DD"),
+      WarrantyExpiryDate: values.WarrantyExpiryDate?.format("YYYY-MM-DD"),
+      DepreciationDate: values.DepreciationDate?.format("YYYY-MM-DD"),
+      SupplierIds: Array.isArray(values.SupplierIds)
+        ? values.SupplierIds
+        : [values.SupplierIds],
+      LocationId: Number(values.LocationId),
+      PurchasePrice: Number(values.PurchasePrice),
+      CategoryId: Number(values.CategoryId),
+    };
+
+    try {
+      const res = await fetch("http://localhost:5243/api/Asset/AddAsset", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formattedValues),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to add asset");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onFinishFailed = (values: any) => {
+    console.log(values);
+  };
+
+  const handleDelete = async(key: string) => {
+
+    try {
+      const res = await fetch(
+        `http://localhost:5243/api/Asset/DeleteAsset/${key}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to delete item");
+      }
+     
+    getAllAssets()
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
+      {showForm && (
+        <ItForm
+          onFinish={handleAddAsset}
+          onFinishFailed={onFinishFailed}
+          onClick={() => setShowForm(false)}
+          allLocations={allLocations}
+          allCategory={allCategory}
+          suppliers={suppliers}
+          allManufacturers={allManufacturers}
+          allUsers={allUsers}
+        />
+      )}
+      {!showForm && (
+        <>
+          <Button style={{ alignSelf: "end" }} onClick={handleFetchInForm}>
+            +
+          </Button>
+          <h1 className="text-4xl font-semibold text-gray-800 dark:text-white/90">IT Assets</h1>
+        <ConfigProvider theme={theme==="dark"?darkTheme:""}>
+          
+
+          <Table
+            className="table"
+            columns={[
+              { title: "Name", dataIndex: "name", key: "name", sorter: (a: User, b: User) =>
+                a.firstName.localeCompare(b.firstName),filters:[] },
+              { title: "Category", dataIndex: "categoryName", key: "categoryName", sorter: (a: User, b: User) =>
+                a.firstName.localeCompare(b.firstName),filters:[]  },
+              { title: "Model Number", dataIndex: "modelNumber", key: "modelNumber" , sorter: (a: User, b: User) =>
+                a.firstName.localeCompare(b.firstName),filters:[] },
+              { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber", sorter: (a: User, b: User) =>
+                a.firstName.localeCompare(b.firstName), },
+              { title: "Purchase Date", dataIndex: "purchaseDate", key: "purchaseDate" },
+              { title: "Purchase Price", dataIndex: "purchasePrice", key: "purchasePrice" },
+              { title: "Warranty", dataIndex: "warrantyExpiryDate", key: "warrantyExpiryDate" },
+              { title: "Assigned to", dataIndex: "assignedUserName", key: "assignedUserName" , sorter: (a: User, b: User) =>
+                a.firstName.localeCompare(b.firstName),},
+              { title: "Location", dataIndex: "locationName", key: "locationName" },
+              { title: "Supplier Names", dataIndex: "supplierNames", key: "supplierNames" },
+              { title: "Status", dataIndex: "status", key: "status" ,
+                render: (_,record:Asset) =>{
+                const backgroundColor = record.status === "Active" ? "#2bc555" : "volcano";
+                const textColor = "white";
+                return <span style={{color:textColor,background:backgroundColor,padding:"4px",borderRadius:"4px"}}>{record.status}</span>
+              }},
+              {
+                title: "Operation",
+                dataIndex: "operation",
+                render: (_, record: Asset) =>
+                  allData.length >= 1 ? (
+                    <Popconfirm
+                      title="Sure to delete?"
+                      onConfirm={() => handleDelete(record.serialNumber)}
+                    >
+                      <Button>Delete</Button>
+                    </Popconfirm>
+                  ) : null,
+              },
+            ]}
+            dataSource={allData}
+          />
+          </ConfigProvider>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default ItAssets;
