@@ -19,7 +19,7 @@ interface Asset {
   modelNumber: string;
   serialNumber: string;
   purchaseDate: string;
-  purchasePrice: number;
+  PurchasePrice: number;
   warrantyExpiryDate: string;
   assignedUserName: string;
   locationName: string;
@@ -212,25 +212,44 @@ getAllAssets()
       PurchaseDate: values.PurchaseDate?.format("YYYY-MM-DD"),
       WarrantyExpiryDate: values.WarrantyExpiryDate?.format("YYYY-MM-DD"),
       DepreciationDate: values.DepreciationDate?.format("YYYY-MM-DD"),
+     
       SupplierIds: Array.isArray(values.SupplierIds)
         ? values.SupplierIds
         : [values.SupplierIds],
-      LocationId: Number(values.LocationId),
-      PurchasePrice: Number(values.PurchasePrice),
-      CategoryId: Number(values.CategoryId),
-    };
-
+        LocationId: Number(values.LocationId),
+        PurchasePrice: Number(values.PurchasePrice),
+        
+      };
+      console.log(formattedValues)
+      const formData=new FormData()
+    formData.append('Name', 'test');
+formData.append('ModelNumber', formattedValues.ModelNumber);
+formData.append('SerialNumber', formattedValues.SerialNumber);
+formData.append('dicription', formattedValues.discription);
+formData.append('PurchaseDate', formattedValues.PurchaseDate);
+formData.append('PurchasePrice', formattedValues.PurchasePrice);
+formData.append('WarrantyExpiryDate', formattedValues.WarrantyExpiryDate);
+formData.append('DepreciationDate', formattedValues.DepreciationDate);
+formData.append('Status', formattedValues.Status);
+formData.append('LocationId', formattedValues.LocationId);
+formData.append('AssignedUserId', formattedValues.AssignedUserId);
+formData.append('CategoryId', formattedValues.CategoryId); 
+formData.append('ManufacturerId',formattedValues.ManufacturerId);
+formData.append('SupplierIds', formattedValues.SupplierIds);
     try {
       const res = await fetch("http://localhost:5243/api/Asset/AddAsset", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
+       
         },
-        body: JSON.stringify(formattedValues),
+        body: formData,
       });
       if (!res.ok) {
         throw new Error("Failed to add asset");
       }
+      setShowForm(false)
+      getAllAssets()
     } catch (error) {
       console.log(error);
     }
@@ -288,19 +307,19 @@ getAllAssets()
           <Table
             className="table"
             columns={[
-              { title: "Name", dataIndex: "name", key: "name", sorter: (a: User, b: User) =>
-                a.firstName.localeCompare(b.firstName),filters:[] },
-              { title: "Category", dataIndex: "categoryName", key: "categoryName", sorter: (a: User, b: User) =>
-                a.firstName.localeCompare(b.firstName),filters:[]  },
-              { title: "Model Number", dataIndex: "modelNumber", key: "modelNumber" , sorter: (a: User, b: User) =>
-                a.firstName.localeCompare(b.firstName),filters:[] },
-              { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber", sorter: (a: User, b: User) =>
-                a.firstName.localeCompare(b.firstName), },
+              { title: "Name", dataIndex: "name", key: "name", sorter: (a: Asset, b: Asset) =>
+                a.name.localeCompare(b.name),filters:[] },
+              { title: "Category", dataIndex: "categoryName", key: "categoryName", sorter:(a: Asset, b: Asset) =>
+                a.categoryName.localeCompare(b.categoryName),filters:[]  },
+              { title: "Model Number", dataIndex: "modelNumber", key: "modelNumber" , sorter: (a: Asset, b: Asset) =>
+                a.modelNumber.localeCompare(b.modelNumber),filters:[] },
+              { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber", sorter:(a: Asset, b: Asset) =>
+                a.serialNumber.localeCompare(b.serialNumber), },
               { title: "Purchase Date", dataIndex: "purchaseDate", key: "purchaseDate" },
-              { title: "Purchase Price", dataIndex: "purchasePrice", key: "purchasePrice" },
+              { title: "Purchase Price", dataIndex: "PurchasePrice", key: "PurchasePrice" },
               { title: "Warranty", dataIndex: "warrantyExpiryDate", key: "warrantyExpiryDate" },
-              { title: "Assigned to", dataIndex: "assignedUserName", key: "assignedUserName" , sorter: (a: User, b: User) =>
-                a.firstName.localeCompare(b.firstName),},
+              { title: "Assigned to", dataIndex: "assignedUserName", key: "assignedUserName" , sorter: (a: Asset, b: Asset) =>
+                a.assignedUserName.localeCompare(b.assignedUserName),},
               { title: "Location", dataIndex: "locationName", key: "locationName" },
               { title: "Supplier Names", dataIndex: "supplierNames", key: "supplierNames" },
               { title: "Status", dataIndex: "status", key: "status" ,

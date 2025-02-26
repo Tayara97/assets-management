@@ -1,4 +1,5 @@
 import { Button, Form, Input, Select, DatePicker } from "antd";
+import moment from "moment"
 
 interface ItFormProps {
   onFinish: (values: any) => void;
@@ -21,6 +22,7 @@ const ItForm: React.FC<ItFormProps> = ({
   allManufacturers,
   allUsers,
 }) => {
+
   return (
     <>
       <Button type="default" onClick={onClick}>
@@ -76,11 +78,11 @@ const ItForm: React.FC<ItFormProps> = ({
         <Form.Item
           label="Purchase Date"
           name="PurchaseDate"
-          rules={[{ required: true, message: "Please input!" }]}
+          rules={[{ required: true, message: "Please input Purchase Date" }]}
         >
           <DatePicker />
         </Form.Item>
-        <Form.Item label="Depreciation Date" name="DepreciationDate">
+        <Form.Item label="Depreciation Date" name="DepreciationDate"  rules={[{ required: true, message: "Please input Depreciation Date" }]}>
           <DatePicker />
         </Form.Item>
         <Form.Item
@@ -93,11 +95,23 @@ const ItForm: React.FC<ItFormProps> = ({
         <Form.Item
           label="Warranty"
           name="WarrantyExpiryDate"
-          rules={[{ required: true, message: "Please input!" }]}
+          dependencies={["PurchaseDate"]}
+          rules={[
+            { required: true, message: "Please input Warranty Date" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                const purchaseDate = getFieldValue("PurchaseDate");
+                if (!purchaseDate || !value || value.isAfter(purchaseDate)) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("Warranty must be after Purchase Date"));
+              },
+            }),
+          ]}
         >
           <DatePicker />
         </Form.Item>
-        <Form.Item label="Description" name="description">
+        <Form.Item label="Description" name="dicription">
           <Input.TextArea />
         </Form.Item>
         <Form.Item

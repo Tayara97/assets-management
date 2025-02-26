@@ -47,7 +47,7 @@ const Users = () => {
       }
 
       const data: User[] = await response.json();
-
+console.log(data)
       // Add `key` for Ant Design Table
       const usersWithKeys = data.map((item) => ({
         ...item,
