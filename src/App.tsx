@@ -1,15 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
-import NotFound from "./pages/OtherPage/NotFound";
-import Videos from "./pages/UiElements/Videos";
-import Images from "./pages/UiElements/Images";
-import Alerts from "./pages/UiElements/Alerts";
-import Badges from "./pages/UiElements/Badges";
-import Avatars from "./pages/UiElements/Avatars";
-import Buttons from "./pages/UiElements/Buttons";
-import LineChart from "./pages/Charts/LineChart";
-import BarChart from "./pages/Charts/BarChart";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
@@ -23,6 +14,10 @@ import HomeRedirect from "./components/HomeRedirect";
 import Category from "./pages/Category/Category";
 import Manufacturer from "./pages/Manufacturer/Manufacturer";
 import UserDashboard from "./pages/userPages/UserDashboard";
+import AssetsTransferRequest from "./pages/userPages/AssetsTransferRequest";
+import AssignedAssets from "./pages/userPages/AssignedAssets";
+import MaintenanceRequest from "./pages/userPages/MaintenanceRequest";
+import UnauthorizedPage from "./pages/UnAuthorizedPage";
 
 export default function App() {
   return (
@@ -101,6 +96,40 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/assetstransferrequest"
+              element={
+                <ProtectedRoute requiredRole={"User"}>
+                  <AssetsTransferRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/AssignedAssets"
+              element={
+                <ProtectedRoute requiredRole={"User"}>
+                  <AssignedAssets />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maintenancerequest"
+              element={
+                <ProtectedRoute requiredRole={"User"}>
+                  <MaintenanceRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/unauthorized"
+              element={
+                <ProtectedRoute>
+                  <UnauthorizedPage />{" "}
+                </ProtectedRoute>
+              }
+            />
+
             {/*
           
             {/* Ui Elements */}

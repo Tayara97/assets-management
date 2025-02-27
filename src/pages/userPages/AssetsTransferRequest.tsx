@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../components/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { Button, Popconfirm, Table } from "antd";
 
 const AssetsTransferRequest = () => {

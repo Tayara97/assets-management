@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../components/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { Table } from "antd";
 const AssignedAssets = () => {
   const [assignedAssets, setAssignedAssets] = useState([]);

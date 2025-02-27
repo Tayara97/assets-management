@@ -8,7 +8,7 @@ const HomeRedirect = () => {
 
   // If not authenticated, send to login
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/signin" replace />;
   }
 
   // Redirect based on user role

@@ -7,11 +7,14 @@ interface ProtectedRouteProps {
   requiredRole?: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+}) => {
   const { isAuthenticated, user } = useContext(AuthContext);
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/signin" replace />;
   }
 
   if (requiredRole && user?.toLowerCase() !== requiredRole.toLowerCase()) {

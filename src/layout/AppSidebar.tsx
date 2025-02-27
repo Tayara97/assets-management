@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
-
 import {
   ChevronDownIcon,
   GridIcon,
@@ -15,6 +14,7 @@ import {
   DropdownItem,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
+import { AuthContext } from "../context/AuthContext";
 
 type NavItem = {
   name: string;
@@ -23,7 +23,27 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
+// Navigation items for Users
+const userNavItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/userdashboard",
+  },
+  {
+    icon: <CheckCircleIcon />,
+    name: "Assets Transfer Request",
+    path: "/assetstransferrequest",
+  },
+  {
+    icon: <CheckCircleIcon />,
+    name: "Assigned Assets",
+    path: "/assignedassets",
+  },
+];
+
+// Navigation items for Admins
+const adminNavItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
@@ -37,27 +57,26 @@ const navItems: NavItem[] = [
       { name: "Non IT Assets", path: "/nonitassets" },
     ],
   },
-  {
-    icon: <UserCircleIcon />,
-    name: "Users",
-    path: "/users",
-  },
 
   {
     icon: <CheckCircleIcon />,
     name: "Location",
     path: "/location",
   },
-
+  {
+    icon: <GroupIcon />,
+    name: "Users Management",
+    path: "/users",
+  },
+  {
+    icon: <ListIcon />,
+    name: "Transfer Assets",
+    path: "/transferassets",
+  },
   {
     icon: <GroupIcon />,
     name: "Suppliers",
     path: "/suppliers",
-  },
-  {
-    icon: <ListIcon />,
-    name: "Transfr Assets",
-    path: "/transferassets",
   },
   {
     icon: (
@@ -83,71 +102,22 @@ const navItems: NavItem[] = [
       { name: "Manufacturer", path: "/manufacturer" },
     ],
   },
-
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
-  // {
-  //   icon: <UserCircleIcon />,
-  //   name: "User Profile",
-  //   path: "/profile",
-  // },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
-  // },
 ];
 
+// "Others" items remain as needed
 const othersItems: NavItem[] = [
-  // {
-  //   icon: <BoxCubeIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <BoxCubeIcon />,
-  //   name: "UI Elements",
-  //   subItems: [
-  //     { name: "Alerts", path: "/alerts", pro: false },
-  //     { name: "Avatar", path: "/avatars", pro: false },
-  //     { name: "Badge", path: "/badge", pro: false },
-  //     { name: "Buttons", path: "/buttons", pro: false },
-  //     { name: "Images", path: "/images", pro: false },
-  //     { name: "Videos", path: "/videos", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <PlugInIcon />,
-  //   name: "Authentication",
-  //   subItems: [
-  //     { name: "Sign In", path: "/signin", pro: false },
-  //     { name: "Sign Up", path: "/signup", pro: false },
-  //   ],
-  // },
+  // Add any additional items for the "Others" category here.
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+
+  const { user } = useContext(AuthContext);
+
+  // Choose the main navigation items based on the user's role.
+  const mainNavItems =
+    user?.toLowerCase() === "admin" ? adminNavItems : userNavItems;
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -158,7 +128,6 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
     (path: string) => location.pathname === path,
     [location.pathname]
@@ -167,7 +136,7 @@ const AppSidebar: React.FC = () => {
   useEffect(() => {
     let submenuMatched = false;
     ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
+      const items = menuType === "main" ? mainNavItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
@@ -182,11 +151,10 @@ const AppSidebar: React.FC = () => {
         }
       });
     });
-
     if (!submenuMatched) {
       setOpenSubmenu(null);
     }
-  }, [location, isActive]);
+  }, [location, isActive, mainNavItems]);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -362,20 +330,6 @@ const AppSidebar: React.FC = () => {
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                 Asset Management
               </h1>
-              {/* <img
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <img
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              /> */}
             </>
           ) : (
             <img
@@ -404,7 +358,7 @@ const AppSidebar: React.FC = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(mainNavItems, "main")}
             </div>
             <div className="">
               <h2
