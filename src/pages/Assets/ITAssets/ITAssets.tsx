@@ -1,15 +1,16 @@
 import { useState, useContext, useEffect } from "react";
-import { Table, Popconfirm, Button,ConfigProvider  } from "antd";
+import { Table, Popconfirm, Button, ConfigProvider } from "antd";
 import { useTheme } from "../../../context/ThemeContext";
-import {AuthContext} from "../../../context/AuthContext"
+import { AuthContext } from "../../../context/AuthContext";
 import ItForm from "./ITForm";
+import Badge from "../../../components/ui/badge/Badge";
 
 const darkTheme = {
   token: {
-    colorBgContainer: '#202a3f',
-    colorText: '#ffffff',
-    colorBorder: '#434343',
-    colorBgElevated: '#2a2a2a',
+    colorBgContainer: "#202a3f",
+    colorText: "#ffffff",
+    colorBorder: "#434343",
+    colorBgElevated: "#2a2a2a",
   },
 };
 interface Asset {
@@ -52,12 +53,14 @@ interface User {
   userId: string;
   firstName: string;
 }
-
+interface ColumnsFilterItem {
+  text: string;
+  value: string;
+}
 const ItAssets: React.FC = () => {
-const {theme}=useTheme()
-const { token } = useContext(AuthContext);
+  const { theme } = useTheme();
+  const { token } = useContext(AuthContext);
 
- 
   const [showForm, setShowForm] = useState<boolean>(false);
   const [allLocations, setAllLocations] = useState<Location[]>([]);
   const [allCategory, setAllCategory] = useState<Category[]>([]);
@@ -150,9 +153,9 @@ const { token } = useContext(AuthContext);
       console.log(error);
     }
   };
-useEffect(()=>{
-getAllAssets()
-},[])
+  useEffect(() => {
+    getAllAssets();
+  }, []);
   const getAllManufacturers = async () => {
     try {
       const res = await fetch(
@@ -212,44 +215,42 @@ getAllAssets()
       PurchaseDate: values.PurchaseDate?.format("YYYY-MM-DD"),
       WarrantyExpiryDate: values.WarrantyExpiryDate?.format("YYYY-MM-DD"),
       DepreciationDate: values.DepreciationDate?.format("YYYY-MM-DD"),
-     
+
       SupplierIds: Array.isArray(values.SupplierIds)
         ? values.SupplierIds
         : [values.SupplierIds],
-        LocationId: Number(values.LocationId),
-        PurchasePrice: Number(values.PurchasePrice),
-        
-      };
-      console.log(formattedValues)
-      const formData=new FormData()
-    formData.append('Name', 'test');
-formData.append('ModelNumber', formattedValues.ModelNumber);
-formData.append('SerialNumber', formattedValues.SerialNumber);
-formData.append('dicription', formattedValues.discription);
-formData.append('PurchaseDate', formattedValues.PurchaseDate);
-formData.append('PurchasePrice', formattedValues.PurchasePrice);
-formData.append('WarrantyExpiryDate', formattedValues.WarrantyExpiryDate);
-formData.append('DepreciationDate', formattedValues.DepreciationDate);
-formData.append('Status', formattedValues.Status);
-formData.append('LocationId', formattedValues.LocationId);
-formData.append('AssignedUserId', formattedValues.AssignedUserId);
-formData.append('CategoryId', formattedValues.CategoryId); 
-formData.append('ManufacturerId',formattedValues.ManufacturerId);
-formData.append('SupplierIds', formattedValues.SupplierIds);
+      LocationId: Number(values.LocationId),
+      PurchasePrice: Number(values.PurchasePrice),
+    };
+
+    const formData = new FormData();
+    formData.append("Name", "test");
+    formData.append("ModelNumber", formattedValues.ModelNumber);
+    formData.append("SerialNumber", formattedValues.SerialNumber);
+    formData.append("dicription", formattedValues.discription);
+    formData.append("PurchaseDate", formattedValues.PurchaseDate);
+    formData.append("PurchasePrice", formattedValues.PurchasePrice);
+    formData.append("WarrantyExpiryDate", formattedValues.WarrantyExpiryDate);
+    formData.append("DepreciationDate", formattedValues.DepreciationDate);
+    formData.append("Status", formattedValues.Status);
+    formData.append("LocationId", formattedValues.LocationId);
+    formData.append("AssignedUserId", formattedValues.AssignedUserId);
+    formData.append("CategoryId", formattedValues.CategoryId);
+    formData.append("ManufacturerId", formattedValues.ManufacturerId);
+    formData.append("SupplierIds", formattedValues.SupplierIds);
     try {
       const res = await fetch("http://localhost:5243/api/Asset/AddAsset", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-       
         },
         body: formData,
       });
       if (!res.ok) {
         throw new Error("Failed to add asset");
       }
-      setShowForm(false)
-      getAllAssets()
+      setShowForm(false);
+      getAllAssets();
     } catch (error) {
       console.log(error);
     }
@@ -259,8 +260,7 @@ formData.append('SupplierIds', formattedValues.SupplierIds);
     console.log(values);
   };
 
-  const handleDelete = async(key: string) => {
-
+  const handleDelete = async (key: string) => {
     try {
       const res = await fetch(
         `http://localhost:5243/api/Asset/DeleteAsset/${key}`,
@@ -274,8 +274,8 @@ formData.append('SupplierIds', formattedValues.SupplierIds);
       if (!res.ok) {
         throw new Error("Failed to delete item");
       }
-     
-    getAllAssets()
+
+      getAllAssets();
     } catch (error) {
       console.log(error);
     }
@@ -298,52 +298,126 @@ formData.append('SupplierIds', formattedValues.SupplierIds);
       {!showForm && (
         <>
           <Button style={{ alignSelf: "end" }} onClick={handleFetchInForm}>
-            +
+            create new
           </Button>
-          <h1 className="text-4xl font-semibold text-gray-800 dark:text-white/90">IT Assets</h1>
-        <ConfigProvider theme={theme==="dark"?darkTheme:""}>
-          
+          <h1 className="text-4xl font-semibold text-gray-800 dark:text-white/90">
+            IT Assets
+          </h1>
+          <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+            <Table
+              className="table"
+              columns={[
+                {
+                  title: "Name",
+                  dataIndex: "name",
+                  key: "name",
+                  sorter: (a: Asset, b: Asset) => a.name.localeCompare(b.name),
+                  filters: [],
+                },
+                {
+                  title: "Category",
+                  dataIndex: "categoryName",
+                  key: "categoryName",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.categoryName.localeCompare(b.categoryName),
+                  filters: allData.map((item) => {
+                    return {
+                      text: item.categoryName,
+                      value: item.categoryName,
+                    };
+                  }),
+                },
+                {
+                  title: "Model Number",
+                  dataIndex: "modelNumber",
+                  key: "modelNumber",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.modelNumber.localeCompare(b.modelNumber),
+                  filters: [],
+                },
+                {
+                  title: "Serial Number",
+                  dataIndex: "serialNumber",
+                  key: "serialNumber",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.serialNumber.localeCompare(b.serialNumber),
+                },
+                {
+                  title: "Purchase Date",
+                  dataIndex: "purchaseDate",
+                  key: "purchaseDate",
+                },
+                {
+                  title: "Purchase Price",
+                  dataIndex: "purchasePrice",
+                  key: "purchasePrice",
+                },
+                {
+                  title: "Warranty",
+                  dataIndex: "warrantyExpiryDate",
+                  key: "warrantyExpiryDate",
+                },
+                {
+                  title: "Assigned to",
+                  dataIndex: "assignedUserName",
+                  key: "assignedUserName",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.assignedUserName.localeCompare(b.assignedUserName),
+                  // filters: [
+                  //   ...new Set(
+                  //     allData.map((item) => {
+                  //       return item.assignedUserName;
+                  //     })
+                  //   ),
+                  // ].map((user) => ({
+                  //   text: user,
+                  //   value: user,
+                  // })),
+                  // onFilter: (value, record) => console.log(record, value),
+                  // // record.name.indexOf(value as string) === 0,
+                },
+                {
+                  title: "Location",
+                  dataIndex: "locationName",
+                  key: "locationName",
+                },
 
-          <Table
-            className="table"
-            columns={[
-              { title: "Name", dataIndex: "name", key: "name", sorter: (a: Asset, b: Asset) =>
-                a.name.localeCompare(b.name),filters:[] },
-              { title: "Category", dataIndex: "categoryName", key: "categoryName", sorter:(a: Asset, b: Asset) =>
-                a.categoryName.localeCompare(b.categoryName),filters:[]  },
-              { title: "Model Number", dataIndex: "modelNumber", key: "modelNumber" , sorter: (a: Asset, b: Asset) =>
-                a.modelNumber.localeCompare(b.modelNumber),filters:[] },
-              { title: "Serial Number", dataIndex: "serialNumber", key: "serialNumber", sorter:(a: Asset, b: Asset) =>
-                a.serialNumber.localeCompare(b.serialNumber), },
-              { title: "Purchase Date", dataIndex: "purchaseDate", key: "purchaseDate" },
-              { title: "Purchase Price", dataIndex: "PurchasePrice", key: "PurchasePrice" },
-              { title: "Warranty", dataIndex: "warrantyExpiryDate", key: "warrantyExpiryDate" },
-              { title: "Assigned to", dataIndex: "assignedUserName", key: "assignedUserName" , sorter: (a: Asset, b: Asset) =>
-                a.assignedUserName.localeCompare(b.assignedUserName),},
-              { title: "Location", dataIndex: "locationName", key: "locationName" },
-              { title: "Supplier Names", dataIndex: "supplierNames", key: "supplierNames" },
-              { title: "Status", dataIndex: "status", key: "status" ,
-                render: (_,record:Asset) =>{
-                const backgroundColor = record.status === "Active" ? "#2bc555" : "volcano";
-                const textColor = "white";
-                return <span style={{color:textColor,background:backgroundColor,padding:"4px",borderRadius:"4px"}}>{record.status}</span>
-              }},
-              {
-                title: "Operation",
-                dataIndex: "operation",
-                render: (_, record: Asset) =>
-                  allData.length >= 1 ? (
-                    <Popconfirm
-                      title="Sure to delete?"
-                      onConfirm={() => handleDelete(record.serialNumber)}
-                    >
-                      <Button>Delete</Button>
-                    </Popconfirm>
-                  ) : null,
-              },
-            ]}
-            dataSource={allData}
-          />
+                {
+                  title: "Status",
+                  dataIndex: "status",
+                  key: "status",
+                  render: (_, record: Asset) => {
+                    return (
+                      <Badge
+                        color={
+                          record.status === "Active"
+                            ? "success"
+                            : record.status === "Pending"
+                            ? "warning"
+                            : "error"
+                        }
+                      >
+                        {record.status}
+                      </Badge>
+                    );
+                  },
+                },
+                {
+                  title: "Operation",
+                  dataIndex: "operation",
+                  render: (_, record: Asset) =>
+                    allData.length >= 1 ? (
+                      <Popconfirm
+                        title="Sure to delete?"
+                        onConfirm={() => handleDelete(record.serialNumber)}
+                      >
+                        <Button>Delete</Button>
+                      </Popconfirm>
+                    ) : null,
+                },
+              ]}
+              dataSource={allData}
+            />
           </ConfigProvider>
         </>
       )}

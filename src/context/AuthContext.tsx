@@ -6,12 +6,15 @@ interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   user: string | null;
+  userEmail: string | null;
   login: (token: string, refreshToken: string) => void;
   logout: () => void;
 }
 
 // Create the context with a default value
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 // Define the props for the AuthProvider component
 interface AuthProviderProps {
@@ -22,8 +25,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem("token") ? true : false;
   });
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
   const [user, setUser] = useState<string | null>(localStorage.getItem("role"));
+  const [userEmail, setUserEmail] = useState<string | null>(
+    localStorage.getItem("email")
+  );
 
   const login = (token: string, refreshToken: string) => {
     localStorage.setItem("token", token);
@@ -35,6 +43,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       tokenData["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     setUser(role);
     localStorage.setItem("role", role);
+    const email = tokenData.email;
+    setUserEmail(email);
   };
 
   const logout = () => {
@@ -88,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, token, login, logout, user }}
+      value={{ isAuthenticated, token, login, logout, user, userEmail }}
     >
       {children}
     </AuthContext.Provider>

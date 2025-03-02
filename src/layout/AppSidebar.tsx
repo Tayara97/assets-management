@@ -47,7 +47,7 @@ const adminNavItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/" }],
+    path: "/",
   },
   {
     icon: <BoxCubeIcon />,
@@ -65,7 +65,7 @@ const adminNavItems: NavItem[] = [
   },
   {
     icon: <GroupIcon />,
-    name: "Users Management",
+    name: "Users",
     path: "/users",
   },
   {
@@ -116,8 +116,7 @@ const AppSidebar: React.FC = () => {
   const { user } = useContext(AuthContext);
 
   // Choose the main navigation items based on the user's role.
-  const mainNavItems =
-    user?.toLowerCase() === "admin" ? adminNavItems : userNavItems;
+  const mainNavItems = user === "Admin" ? adminNavItems : userNavItems;
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";

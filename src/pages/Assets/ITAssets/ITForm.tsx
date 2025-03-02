@@ -1,5 +1,5 @@
-import { Button, Form, Input, Select, DatePicker } from "antd";
-import moment from "moment"
+import { Button, Form, Input, Select, DatePicker, InputNumber } from "antd";
+import moment from "moment";
 
 interface ItFormProps {
   onFinish: (values: any) => void;
@@ -22,7 +22,6 @@ const ItForm: React.FC<ItFormProps> = ({
   allManufacturers,
   allUsers,
 }) => {
-
   return (
     <>
       <Button type="default" onClick={onClick}>
@@ -40,10 +39,9 @@ const ItForm: React.FC<ItFormProps> = ({
         <Form.Item
           label="Asset Name"
           name="Name"
-          
           rules={[{ required: true, message: "Please input Asset name" }]}
         >
-          <Input  />
+          <Input />
         </Form.Item>
         <Form.Item
           label="Category"
@@ -82,7 +80,13 @@ const ItForm: React.FC<ItFormProps> = ({
         >
           <DatePicker />
         </Form.Item>
-        <Form.Item label="Depreciation Date" name="DepreciationDate"  rules={[{ required: true, message: "Please input Depreciation Date" }]}>
+        <Form.Item
+          label="Depreciation Date"
+          name="DepreciationDate"
+          rules={[
+            { required: true, message: "Please input Depreciation Date" },
+          ]}
+        >
           <DatePicker />
         </Form.Item>
         <Form.Item
@@ -90,7 +94,7 @@ const ItForm: React.FC<ItFormProps> = ({
           name="PurchasePrice"
           rules={[{ required: true, message: "Please input Purchase Price" }]}
         >
-          <Input />
+          <InputNumber />
         </Form.Item>
         <Form.Item
           label="Warranty"
@@ -104,7 +108,9 @@ const ItForm: React.FC<ItFormProps> = ({
                 if (!purchaseDate || !value || value.isAfter(purchaseDate)) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error("Warranty must be after Purchase Date"));
+                return Promise.reject(
+                  new Error("Warranty must be after Purchase Date")
+                );
               },
             }),
           ]}
