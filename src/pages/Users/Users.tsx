@@ -1,8 +1,9 @@
 import { Table, Popconfirm, Button } from "antd";
+import { motion, AnimatePresence } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 import UserForm from "./UserForm";
 // import { AuthContext } from "../components/AuthContext"; // Remove .jsx extension
-import { AuthContext } from "../../context/AuthContext"; 
+import { AuthContext } from "../../context/AuthContext";
 // Define types for your user data
 interface User {
   userId: string;
@@ -11,7 +12,7 @@ interface User {
   email: string;
   password: string;
   role: string;
-  key?: string; 
+  key?: string;
 }
 
 interface UserFormValues {
@@ -47,7 +48,7 @@ const Users = () => {
       }
 
       const data: User[] = await response.json();
-console.log(data)
+
       // Add `key` for Ant Design Table
       const usersWithKeys = data.map((item) => ({
         ...item,
@@ -73,7 +74,7 @@ console.log(data)
 
   // Handle form submission
   const handleFormSubmit = async (values: UserFormValues) => {
-    console.log(values)
+    console.log(values);
     const formData = new FormData();
     formData.append("FirstName", values.FirstName);
     formData.append("LastName", values.LastName);
@@ -113,20 +114,20 @@ console.log(data)
   };
 
   return (
-    < >
+    <motion.div>
       {!showForm && (
         <>
-      
-           {/* <Input
+          {/* <Input
             placeholder="input search text"
             allowClear
             style={{ width: 200 }}
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
           /> */}
-          <Button className="float-right mb-4"
-           onClick={()=>setShowForm(true)}
-           >
+          <Button
+            className="float-right mb-4"
+            onClick={() => setShowForm(true)}
+          >
             +
           </Button>
           <Table
@@ -142,7 +143,7 @@ console.log(data)
                 dataIndex: "lastName",
                 sorter: (a: User, b: User) =>
                   a.lastName.localeCompare(b.lastName),
-                filters:[]
+                filters: [],
               },
               {
                 title: "Email",
@@ -173,18 +174,34 @@ console.log(data)
               },
             ]}
             dataSource={filteredData}
-          /> 
+            components={{
+              body: {
+                row: ({ children, ...props }) => (
+                  <AnimatePresence>
+                    <motion.tr
+                      {...props}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {children}
+                    </motion.tr>
+                  </AnimatePresence>
+                ),
+              },
+            }}
+          />
         </>
       )}
       {showForm && (
-       <UserForm
-       
-       onFinish={handleFormSubmit}
+        <UserForm
+          onFinish={handleFormSubmit}
           onFinishFailed={onFinishFailed}
           onClick={() => setShowForm(false)}
-       />
+        />
       )}
-    </>
+    </motion.div>
   );
 };
 

@@ -1,9 +1,15 @@
 import { Button, message, Popconfirm, Table, Input } from "antd";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  SearchOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import LocationForm from "../Location/LocationForm";
 import { AuthContext } from "../../context/AuthContext";
 import LocationEditForm from "../Location/LocationEditForm";
-import type { TableColumnsType } from 'antd';
+import type { TableColumnsType } from "antd";
 
 interface LocationData {
   key: number;
@@ -30,7 +36,9 @@ const Location = () => {
   const [locationData, setLocationData] = useState<LocationData[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [editable, setEditable] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
+    null
+  );
 
   const getAllLocations = async () => {
     try {
@@ -187,12 +195,12 @@ const Location = () => {
       dataIndex: "operation",
       render: (_, record) => (
         <div className="operation-btns flex gap-3">
-          <Button onClick={() => showEditForm(record)}>Edit</Button>
+          <EditOutlined onClick={() => showEditForm(record)}>Edit</EditOutlined>
           <Popconfirm
             title="Sure to delete?"
             onConfirm={() => handleDelete(record.key)}
           >
-            <Button danger>Delete</Button>
+            <DeleteOutlined>Delete</DeleteOutlined>
           </Popconfirm>
         </div>
       ),
@@ -202,7 +210,7 @@ const Location = () => {
   return (
     <div>
       {!showForm && !editable && (
-        <>
+        <motion.div>
           <Input
             placeholder="Search by barcode"
             allowClear
@@ -210,16 +218,37 @@ const Location = () => {
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
           />
-        <Button className="my-4 float-right" type="default" onClick={handleShowForm}>
-           +
+          <Button
+            className="my-4 float-right"
+            type="default"
+            onClick={handleShowForm}
+          >
+            +
           </Button>
           <Table
             columns={columns}
             dataSource={filterdData}
             rowKey="key"
             pagination={{ pageSize: 10 }}
+            components={{
+              body: {
+                row: ({ children, ...props }) => (
+                  <AnimatePresence>
+                    <motion.tr
+                      {...props}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {children}
+                    </motion.tr>
+                  </AnimatePresence>
+                ),
+              },
+            }}
           />
-        </>
+        </motion.div>
       )}
       {showForm && (
         <LocationForm

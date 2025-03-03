@@ -1,9 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import { Table, Popconfirm, Button, ConfigProvider } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import { useTheme } from "../../../context/ThemeContext";
 import { AuthContext } from "../../../context/AuthContext";
 import ItForm from "./ITForm";
 import Badge from "../../../components/ui/badge/Badge";
+import { motion, AnimatePresence } from "framer-motion";
 
 const darkTheme = {
   token: {
@@ -282,7 +284,7 @@ const ItAssets: React.FC = () => {
   };
 
   return (
-    <div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
+    <motion.div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
       {showForm && (
         <ItForm
           onFinish={handleAddAsset}
@@ -297,7 +299,11 @@ const ItAssets: React.FC = () => {
       )}
       {!showForm && (
         <>
-          <Button style={{ alignSelf: "end" }} onClick={handleFetchInForm}>
+          <Button
+            style={{ alignSelf: "end" }}
+            className="px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
+            onClick={handleFetchInForm}
+          >
             create new
           </Button>
           <h1 className="text-4xl font-semibold text-gray-800 dark:text-white/90">
@@ -390,14 +396,14 @@ const ItAssets: React.FC = () => {
                     return (
                       <Badge
                         color={
-                          record.status === "Active"
+                          record?.status === "Active"
                             ? "success"
-                            : record.status === "Pending"
+                            : record?.status === "Pending"
                             ? "warning"
                             : "error"
                         }
                       >
-                        {record.status}
+                        {record?.status}
                       </Badge>
                     );
                   },
@@ -411,17 +417,35 @@ const ItAssets: React.FC = () => {
                         title="Sure to delete?"
                         onConfirm={() => handleDelete(record.serialNumber)}
                       >
-                        <Button>Delete</Button>
+                        <DeleteOutlined>Delete</DeleteOutlined>
                       </Popconfirm>
                     ) : null,
                 },
               ]}
               dataSource={allData}
+              rowKey="key"
+              components={{
+                body: {
+                  row: ({ children, ...props }) => (
+                    <AnimatePresence>
+                      <motion.tr
+                        {...props}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {children}
+                      </motion.tr>
+                    </AnimatePresence>
+                  ),
+                },
+              }}
             />
           </ConfigProvider>
         </>
       )}
-    </div>
+    </motion.div>
   );
 };
 
