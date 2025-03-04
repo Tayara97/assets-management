@@ -226,7 +226,7 @@ const ItAssets: React.FC = () => {
     };
 
     const formData = new FormData();
-    formData.append("Name", "test");
+    formData.append("Name", formattedValues.Name);
     formData.append("ModelNumber", formattedValues.ModelNumber);
     formData.append("SerialNumber", formattedValues.SerialNumber);
     formData.append("dicription", formattedValues.discription);
@@ -325,13 +325,15 @@ const ItAssets: React.FC = () => {
                   dataIndex: "categoryName",
                   key: "categoryName",
                   sorter: (a: Asset, b: Asset) =>
-                    a.categoryName.localeCompare(b.categoryName),
+                    (a.categoryName || "").localeCompare(b.categoryName || ""),
                   filters: allData.map((item) => {
                     return {
                       text: item.categoryName,
                       value: item.categoryName,
                     };
                   }),
+
+                  // record.name.indexOf(value as string) === 0,
                 },
                 {
                   title: "Model Number",

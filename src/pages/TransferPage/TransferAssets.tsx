@@ -1,8 +1,17 @@
-import { Button, Table } from "antd";
-import { useState, useEffect,useContext } from "react";
+import { Button, Table, ConfigProvider } from "antd";
+import { useState, useEffect, useContext } from "react";
 import TransferForms from "./TransferForms";
 import { AuthContext } from "../../context/AuthContext";
-
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../../context/ThemeContext";
+const darkTheme = {
+  token: {
+    colorBgContainer: "#202a3f",
+    colorText: "#ffffff",
+    colorBorder: "#434343",
+    colorBgElevated: "#2a2a2a",
+  },
+};
 export interface Asset {
   id: string;
   name: string;
@@ -13,6 +22,7 @@ export interface Asset {
 
 const TransferAssets: React.FC = () => {
   const { token } = useContext(AuthContext);
+  const { theme } = useTheme();
   const [showShowAllForms, setShowAllForms] = useState<boolean>(false);
   const [tableData, setTableData] = useState<Asset[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
@@ -29,6 +39,7 @@ const TransferAssets: React.FC = () => {
         throw new Error("Failed to get data from the backend");
       }
       const data: Asset[] = await res.json();
+
       const uniqueData = data.map((item) => ({ ...item, key: item.id }));
       setTableData(uniqueData);
     } catch (error) {
@@ -46,13 +57,21 @@ const TransferAssets: React.FC = () => {
   };
 
   return (
-    <>
+    <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
       {!showShowAllForms && (
         <Table
           columns={[
             { title: "Asset Name", dataIndex: "name", key: "name" },
-            { title: "User", dataIndex: "assignedUserName", key: "assignedUserName" },
-            { title: "Location", dataIndex: "locationName", key: "locationName" },
+            {
+              title: "User",
+              dataIndex: "assignedUserName",
+              key: "assignedUserName",
+            },
+            {
+              title: "Location",
+              dataIndex: "locationName",
+              key: "locationName",
+            },
             {
               title: "Action",
               dataIndex: "",
@@ -63,6 +82,24 @@ const TransferAssets: React.FC = () => {
             },
           ]}
           dataSource={tableData}
+          rowKey="key"
+          components={{
+            body: {
+              row: ({ children, ...props }) => (
+                <AnimatePresence>
+                  <motion.tr
+                    {...props}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {children}
+                  </motion.tr>
+                </AnimatePresence>
+              ),
+            },
+          }}
         />
       )}
       {showShowAllForms && selectedAsset && (
@@ -72,7 +109,7 @@ const TransferAssets: React.FC = () => {
           setShowAllForms={setShowAllForms}
         />
       )}
-    </>
+    </ConfigProvider>
   );
 };
 

@@ -1,4 +1,11 @@
-import { Button, message, Popconfirm, Table, Input } from "antd";
+import {
+  Button,
+  message,
+  Popconfirm,
+  Table,
+  Input,
+  ConfigProvider,
+} from "antd";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   SearchOutlined,
@@ -8,9 +15,17 @@ import {
 import { useContext, useEffect, useState } from "react";
 import LocationForm from "../Location/LocationForm";
 import { AuthContext } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import LocationEditForm from "../Location/LocationEditForm";
 import type { TableColumnsType } from "antd";
-
+const darkTheme = {
+  token: {
+    colorBgContainer: "#202a3f",
+    colorText: "#ffffff",
+    colorBorder: "#434343",
+    colorBgElevated: "#2a2a2a",
+  },
+};
 interface LocationData {
   key: number;
   id: number;
@@ -31,6 +46,7 @@ interface LocationEditFormValues {
 }
 
 const Location = () => {
+  const { theme } = useTheme();
   const { token } = useContext(AuthContext);
   const [showForm, setShowForm] = useState(false);
   const [locationData, setLocationData] = useState<LocationData[]>([]);
@@ -88,7 +104,7 @@ const Location = () => {
           body: JSON.stringify(values),
         }
       );
-
+      console.log(response);
       if (response.status === 409) {
         message.error("barcode already exist");
         return;
@@ -210,45 +226,48 @@ const Location = () => {
   return (
     <div>
       {!showForm && !editable && (
-        <motion.div>
-          <Input
-            placeholder="Search by barcode"
-            allowClear
-            style={{ width: 200 }}
-            onChange={(e) => setSearchInput(e.target.value)}
-            value={searchInput}
-          />
-          <Button
-            className="my-4 float-right"
-            type="default"
-            onClick={handleShowForm}
-          >
-            +
-          </Button>
-          <Table
-            columns={columns}
-            dataSource={filterdData}
-            rowKey="key"
-            pagination={{ pageSize: 10 }}
-            components={{
-              body: {
-                row: ({ children, ...props }) => (
-                  <AnimatePresence>
-                    <motion.tr
-                      {...props}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {children}
-                    </motion.tr>
-                  </AnimatePresence>
-                ),
-              },
-            }}
-          />
-        </motion.div>
+        <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+          <motion.div>
+            <Input
+              className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-8 pr-8 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+              placeholder="Search by barcode"
+              allowClear
+              style={{ width: 200 }}
+              onChange={(e) => setSearchInput(e.target.value)}
+              value={searchInput}
+            />
+            <Button
+              className="my-4 float-right"
+              type="default"
+              onClick={handleShowForm}
+            >
+              +
+            </Button>
+            <Table
+              columns={columns}
+              dataSource={filterdData}
+              rowKey="key"
+              pagination={{ pageSize: 10 }}
+              components={{
+                body: {
+                  row: ({ children, ...props }) => (
+                    <AnimatePresence>
+                      <motion.tr
+                        {...props}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {children}
+                      </motion.tr>
+                    </AnimatePresence>
+                  ),
+                },
+              }}
+            />
+          </motion.div>
+        </ConfigProvider>
       )}
       {showForm && (
         <LocationForm

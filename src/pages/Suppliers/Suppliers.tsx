@@ -4,6 +4,8 @@ import { useContext, useState, useEffect } from "react";
 import SupplierForm from "../Suppliers/SupplierForm";
 import { AuthContext } from "../../context/AuthContext";
 import SupplierEditForm from "../Suppliers/SupplierEditForm";
+import { motion, AnimatePresence } from "framer-motion";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 interface Supplier {
   id: string;
@@ -28,7 +30,9 @@ const Suppliers = () => {
   const [suppliersData, setSuppliersData] = useState<Supplier[]>([]);
   const { token } = useContext(AuthContext);
   const [editable, setEditable] = useState(false);
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
+    null
+  );
 
   const handleShowForm = () => {
     setShowForm(!showForm);
@@ -42,16 +46,19 @@ const Suppliers = () => {
       address: values.address,
       note: values.note || "",
     };
-    
+
     try {
-      const response = await fetch("http://localhost:5243/api/Supplier/AddSupplier", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        "http://localhost:5243/api/Supplier/AddSupplier",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
       if (response.status === 409) {
         message.error("Company already exist");
@@ -68,18 +75,22 @@ const Suppliers = () => {
 
   const getAllSuppliers = async () => {
     try {
-      const response = await fetch("http://localhost:5243/api/Supplier/GetAllSuppliers", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
+      const response = await fetch(
+        "http://localhost:5243/api/Supplier/GetAllSuppliers",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       if (!response.ok) throw new Error("Failed to get data from the backend");
-      
-      const data = await response.json() as Array<Omit<Supplier, 'key'>>;
-      const suppliersWithKeys = data.map(item => ({ ...item, key: item.id }));
+
+      const data = (await response.json()) as Array<Omit<Supplier, "key">>;
+      console.log(data);
+      const suppliersWithKeys = data.map((item) => ({ ...item, key: item.id }));
       setSuppliersData(suppliersWithKeys);
     } catch (error) {
       console.error("Error:", error);
@@ -95,7 +106,7 @@ const Suppliers = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const selectedItem = suppliersData.find(item => item.id === id);
+    const selectedItem = suppliersData.find((item) => item.id === id);
     if (!selectedItem) return;
 
     try {
@@ -155,15 +166,15 @@ const Suppliers = () => {
       title: "Operation",
       dataIndex: "operation",
       render: (_, record) => (
-        <>
-          <Button onClick={() => showEditForm(record)}>Edit</Button>
+        <div className="flex gap-5">
+          <EditOutlined onClick={() => showEditForm(record)}>Edit</EditOutlined>
           <Popconfirm
             title="Sure to delete?"
             onConfirm={() => handleDelete(record.key)}
           >
-            <Button>Delete</Button>
+            <DeleteOutlined>Delete</DeleteOutlined>
           </Popconfirm>
-        </>
+        </div>
       ),
     },
   ];
@@ -172,14 +183,50 @@ const Suppliers = () => {
     <div>
       {!showForm && !editable && (
         <>
-          <Button className="my-4 float-right" type="default" onClick={handleShowForm}>
-           +
+          <Button
+            className="my-4 float-right"
+            type="default"
+            onClick={handleShowForm}
+          >
+            +
           </Button>
-          <Table columns={columns} dataSource={suppliersData} />
+          <Table
+            columns={columns}
+            dataSource={suppliersData}
+            rowKey="key"
+            components={{
+              body: {
+                row: ({ children, ...props }) => (
+                  <AnimatePresence>
+                    <motion.tr
+                      {...props}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {children}
+                    </motion.tr>
+                  </AnimatePresence>
+                ),
+              },
+            }}
+          />
         </>
       )}
-      {showForm && <SupplierForm onSubmitForm={onSubmitForm}  onFinishFailed={ onFinishFailed} onClick={() => setShowForm(false)} />}
-      {editable && <SupplierEditForm {...{ onFinish: handleSubmitEdit, onFinishFailed }} onClick={() => setEditable(false)} />}
+      {showForm && (
+        <SupplierForm
+          onSubmitForm={onSubmitForm}
+          onFinishFailed={onFinishFailed}
+          onClick={() => setShowForm(false)}
+        />
+      )}
+      {editable && (
+        <SupplierEditForm
+          {...{ onFinish: handleSubmitEdit, onFinishFailed }}
+          onClick={() => setEditable(false)}
+        />
+      )}
     </div>
   );
 };

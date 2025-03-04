@@ -1,12 +1,4 @@
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  InputNumber,
-  ConfigProvider,
-} from "antd";
+import { Button, Form, Input, Select, DatePicker, InputNumber } from "antd";
 import moment from "moment";
 
 interface ItFormProps {

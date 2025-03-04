@@ -1,10 +1,10 @@
-import { Table, Popconfirm, Button } from "antd";
+import { Table, Popconfirm, Button, ConfigProvider } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useTheme } from "../../context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 import UserForm from "./UserForm";
-// import { AuthContext } from "../components/AuthContext"; // Remove .jsx extension
 import { AuthContext } from "../../context/AuthContext";
-// Define types for your user data
 interface User {
   userId: string;
   firstName: string;
@@ -22,9 +22,17 @@ interface UserFormValues {
   Password: string;
   Role: string;
 }
-
+const darkTheme = {
+  token: {
+    colorBgContainer: "#202a3f",
+    colorText: "#ffffff",
+    colorBorder: "#434343",
+    colorBgElevated: "#2a2a2a",
+  },
+};
 const Users = () => {
-  const { token } = useContext(AuthContext); // AuthContext must be typed
+  const { token } = useContext(AuthContext);
+  const { theme } = useTheme();
   const [usersData, setUsersData] = useState<User[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
@@ -114,94 +122,96 @@ const Users = () => {
   };
 
   return (
-    <motion.div>
-      {!showForm && (
-        <>
-          {/* <Input
+    <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+      <motion.div>
+        {!showForm && (
+          <>
+            {/* <Input
             placeholder="input search text"
             allowClear
             style={{ width: 200 }}
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
           /> */}
-          <Button
-            className="float-right mb-4"
-            onClick={() => setShowForm(true)}
-          >
-            +
-          </Button>
-          <Table
-            columns={[
-              {
-                title: "First Name",
-                dataIndex: "firstName",
-                sorter: (a: User, b: User) =>
-                  a.firstName.localeCompare(b.firstName),
-              },
-              {
-                title: "Last Name",
-                dataIndex: "lastName",
-                sorter: (a: User, b: User) =>
-                  a.lastName.localeCompare(b.lastName),
-                filters: [],
-              },
-              {
-                title: "Email",
-                dataIndex: "email",
-              },
-              {
-                title: "Password",
-                dataIndex: "password",
-              },
-              {
-                title: "Role",
-                dataIndex: "role",
-              },
-              {
-                title: "Operation",
-                dataIndex: "operation",
-                render: (_: any, record: User) => (
-                  <Popconfirm
-                    title="Sure to delete?"
-                    onConfirm={() => {
-                      // Implement delete logic here
-                      console.log("Deleting user:", record.userId);
-                    }}
-                  >
-                    <Button>Delete</Button>
-                  </Popconfirm>
-                ),
-              },
-            ]}
-            dataSource={filteredData}
-            components={{
-              body: {
-                row: ({ children, ...props }) => (
-                  <AnimatePresence>
-                    <motion.tr
-                      {...props}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
+            <Button
+              className="float-right mb-4"
+              onClick={() => setShowForm(true)}
+            >
+              Create new
+            </Button>
+            <Table
+              columns={[
+                {
+                  title: "First Name",
+                  dataIndex: "firstName",
+                  sorter: (a: User, b: User) =>
+                    a.firstName.localeCompare(b.firstName),
+                },
+                {
+                  title: "Last Name",
+                  dataIndex: "lastName",
+                  sorter: (a: User, b: User) =>
+                    a.lastName.localeCompare(b.lastName),
+                  filters: [],
+                },
+                {
+                  title: "Email",
+                  dataIndex: "email",
+                },
+                {
+                  title: "Password",
+                  dataIndex: "password",
+                },
+                {
+                  title: "Role",
+                  dataIndex: "role",
+                },
+                {
+                  title: "Operation",
+                  dataIndex: "operation",
+                  render: (_: any, record: User) => (
+                    <Popconfirm
+                      title="Sure to delete?"
+                      onConfirm={() => {
+                        // Implement delete logic here
+                        console.log("Deleting user:", record.userId);
+                      }}
                     >
-                      {children}
-                    </motion.tr>
-                  </AnimatePresence>
-                ),
-              },
-            }}
+                      <DeleteOutlined>Delete</DeleteOutlined>
+                    </Popconfirm>
+                  ),
+                },
+              ]}
+              dataSource={filteredData}
+              components={{
+                body: {
+                  row: ({ children, ...props }) => (
+                    <AnimatePresence>
+                      <motion.tr
+                        {...props}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {children}
+                      </motion.tr>
+                    </AnimatePresence>
+                  ),
+                },
+              }}
+            />
+          </>
+        )}
+        {showForm && (
+          <UserForm
+            onFinish={handleFormSubmit}
+            onFinishFailed={onFinishFailed}
+            onClick={() => setShowForm(false)}
           />
-        </>
-      )}
-      {showForm && (
-        <UserForm
-          onFinish={handleFormSubmit}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setShowForm(false)}
-        />
-      )}
-    </motion.div>
+        )}
+      </motion.div>
+    </ConfigProvider>
   );
 };
 

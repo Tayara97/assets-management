@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Form, Button, Select } from "antd";
-import {Asset} from "./TransferAssets";
+import { Asset } from "./TransferAssets";
 
 interface Location {
   id: string;
@@ -14,7 +14,10 @@ interface TransferLocationFormProps {
   selectedAsset: Asset;
 }
 
-const TransferLocationForm: React.FC<TransferLocationFormProps> = ({ onFinish, selectedAsset }) => {
+const TransferLocationForm: React.FC<TransferLocationFormProps> = ({
+  onFinish,
+  selectedAsset,
+}) => {
   const { token } = useContext(AuthContext);
   const [locationData, setLocationData] = useState<Location[]>([]);
 
@@ -45,8 +48,12 @@ const TransferLocationForm: React.FC<TransferLocationFormProps> = ({ onFinish, s
     getAllLocations();
   }, []);
 
-  const options = locationData.filter((item) => item.name !== selectedAsset.locationName);
-  const transferFromLocation = locationData.find((item) => item.name === selectedAsset.locationName);
+  const options = locationData.filter(
+    (item) => item.barcode !== selectedAsset.locationBarcode
+  );
+  const transferFromLocation = locationData.find(
+    (item) => item.name === selectedAsset.locationName
+  );
 
   return (
     <>
