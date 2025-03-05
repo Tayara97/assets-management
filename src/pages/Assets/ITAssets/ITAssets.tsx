@@ -157,6 +157,9 @@ const ItAssets: React.FC = () => {
   };
   useEffect(() => {
     getAllAssets();
+    getAllCategory();
+    getUsers();
+    getLocations();
   }, []);
   const getAllManufacturers = async () => {
     try {
@@ -282,7 +285,6 @@ const ItAssets: React.FC = () => {
       console.log(error);
     }
   };
-
   return (
     <motion.div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
       {showForm && (
@@ -326,14 +328,13 @@ const ItAssets: React.FC = () => {
                   key: "categoryName",
                   sorter: (a: Asset, b: Asset) =>
                     (a.categoryName || "").localeCompare(b.categoryName || ""),
-                  filters: allData.map((item) => {
-                    return {
-                      text: item.categoryName,
-                      value: item.categoryName,
-                    };
+                  filters: allCategory.map((cat) => {
+                    return { text: cat.name, value: cat.name };
                   }),
-
-                  // record.name.indexOf(value as string) === 0,
+                  filterMode: "tree",
+                  filterSearch: true,
+                  onFilter: (value, record) =>
+                    record.categoryName.startsWith(value as string),
                 },
                 {
                   title: "Model Number",
@@ -341,7 +342,6 @@ const ItAssets: React.FC = () => {
                   key: "modelNumber",
                   sorter: (a: Asset, b: Asset) =>
                     a.modelNumber.localeCompare(b.modelNumber),
-                  filters: [],
                 },
                 {
                   title: "Serial Number",
@@ -371,23 +371,26 @@ const ItAssets: React.FC = () => {
                   key: "assignedUserName",
                   sorter: (a: Asset, b: Asset) =>
                     a.assignedUserName.localeCompare(b.assignedUserName),
-                  // filters: [
-                  //   ...new Set(
-                  //     allData.map((item) => {
-                  //       return item.assignedUserName;
-                  //     })
-                  //   ),
-                  // ].map((user) => ({
-                  //   text: user,
-                  //   value: user,
-                  // })),
-                  // onFilter: (value, record) => console.log(record, value),
-                  // // record.name.indexOf(value as string) === 0,
+
+                  filters: allUsers.map((user) => {
+                    return { text: user.firstName, value: user.firstName };
+                  }),
+                  filterMode: "tree",
+                  filterSearch: true,
+                  onFilter: (value, record) =>
+                    record.assignedUserName.startsWith(value as string),
                 },
                 {
                   title: "Location",
                   dataIndex: "locationName",
                   key: "locationName",
+                  filters: allLocations.map((location) => {
+                    return { text: location.name, value: location.name };
+                  }),
+                  filterMode: "tree",
+                  filterSearch: true,
+                  onFilter: (value, record) =>
+                    record.locationName.startsWith(value as string),
                 },
 
                 {
