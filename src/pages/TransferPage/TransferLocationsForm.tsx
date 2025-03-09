@@ -1,13 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
 import { Form, Button, Select } from "antd";
 import { Asset } from "./TransferAssets";
-
-interface Location {
-  id: string;
-  name: string;
-  barcode: string;
-}
 
 interface TransferLocationFormProps {
   onFinish: (values: any) => void;
@@ -17,37 +9,8 @@ interface TransferLocationFormProps {
 const TransferLocationForm: React.FC<TransferLocationFormProps> = ({
   onFinish,
   selectedAsset,
+  locationData,
 }) => {
-  const { token } = useContext(AuthContext);
-  const [locationData, setLocationData] = useState<Location[]>([]);
-
-  const getAllLocations = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5243/api/Location/GetAllLocations/all`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to get data from the backend");
-      }
-      const data: Location[] = await response.json();
-      const dataWithKeys = data.map((item) => ({ ...item, key: item.id }));
-      setLocationData(dataWithKeys);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    getAllLocations();
-  }, []);
-
   const options = locationData.filter(
     (item) => item.barcode !== selectedAsset.locationBarcode
   );

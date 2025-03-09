@@ -1,11 +1,12 @@
 import { useState, useContext, useEffect } from "react";
-import { Table, Popconfirm, Button, ConfigProvider } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Table, Popconfirm, Button, ConfigProvider, message } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useTheme } from "../../../context/ThemeContext";
 import { AuthContext } from "../../../context/AuthContext";
 import ItForm from "./ITForm";
 import Badge from "../../../components/ui/badge/Badge";
 import { motion, AnimatePresence } from "framer-motion";
+import EditITForm from "./EditITForm";
 
 const darkTheme = {
   token: {
@@ -64,12 +65,14 @@ const ItAssets: React.FC = () => {
   const { token } = useContext(AuthContext);
 
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [showEditForm, setShowEditForm] = useState<boolean>(false);
   const [allLocations, setAllLocations] = useState<Location[]>([]);
   const [allCategory, setAllCategory] = useState<Category[]>([]);
   const [allManufacturers, setAllManufacturers] = useState<Manufacturer[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [allData, setAllData] = useState<Asset[]>([]);
+  const [selectedAsset, setSelectedAsset] = useState<Asset[]>();
 
   const getUsers = async () => {
     try {
@@ -157,9 +160,11 @@ const ItAssets: React.FC = () => {
   };
   useEffect(() => {
     getAllAssets();
-    getAllCategory();
     getUsers();
     getLocations();
+    getAllCategory();
+    getSuppliers();
+    getAllManufacturers();
   }, []);
   const getAllManufacturers = async () => {
     try {
@@ -205,15 +210,65 @@ const ItAssets: React.FC = () => {
     }
   };
 
-  const handleFetchInForm = async () => {
-    setShowForm(true);
-    getUsers();
-    getLocations();
-    getAllCategory();
-    getSuppliers();
-    getAllManufacturers();
-  };
+  // const handleFetchInForm = async () => {
+  //   setShowForm(true);
+  //   getUsers();
+  //   getLocations();
+  //   getAllCategory();
+  //   getSuppliers();
+  //   getAllManufacturers();
+  // };
 
+  const handleEditAsset = async (values: any) => {
+    const formattedValues = {
+      ...values,
+      PurchaseDate: values.PurchaseDate?.format("YYYY-MM-DD"),
+      WarrantyExpiryDate: values.WarrantyExpiryDate?.format("YYYY-MM-DD"),
+      DepreciationDate: values.DepreciationDate?.format("YYYY-MM-DD"),
+
+      SupplierIds: Array.isArray(values.SupplierIds)
+        ? values.SupplierIds
+        : [values.SupplierIds],
+      LocationId: Number(values.LocationId),
+      PurchasePrice: Number(values.PurchasePrice),
+    };
+
+    const formData = new FormData();
+    formData.append("Name", formattedValues.Name);
+    formData.append("ModelNumber", formattedValues.ModelNumber);
+    formData.append("SerialNumber", formattedValues.SerialNumber);
+    formData.append("dicription", formattedValues.discription);
+    formData.append("PurchaseDate", formattedValues.PurchaseDate);
+    formData.append("PurchasePrice", formattedValues.PurchasePrice);
+    formData.append("WarrantyExpiryDate", formattedValues.WarrantyExpiryDate);
+    formData.append("DepreciationDate", formattedValues.DepreciationDate);
+    formData.append("Status", formattedValues.Status);
+    formData.append("LocationId", formattedValues.LocationId);
+    formData.append("AssignedUserId", formattedValues.AssignedUserId);
+    formData.append("CategoryId", formattedValues.CategoryId);
+    formData.append("ManufacturerId", formattedValues.ManufacturerId);
+    formData.append("SupplierIds", formattedValues.SupplierIds);
+
+    try {
+      const res = await fetch(
+        `http://localhost:5243/api/Asset/UpdateAsset?serialNumber=${selectedAsset.serialNumber}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to add asset");
+      }
+      setShowEditForm(false);
+      getAllAssets();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleAddAsset = async (values: any) => {
     const formattedValues = {
       ...values,
@@ -243,6 +298,8 @@ const ItAssets: React.FC = () => {
     formData.append("CategoryId", formattedValues.CategoryId);
     formData.append("ManufacturerId", formattedValues.ManufacturerId);
     formData.append("SupplierIds", formattedValues.SupplierIds);
+    const messageKey = "addAsset";
+    message.loading({ content: "Adding asset...", key: messageKey });
     try {
       const res = await fetch("http://localhost:5243/api/Asset/AddAsset", {
         method: "POST",
@@ -251,13 +308,28 @@ const ItAssets: React.FC = () => {
         },
         body: formData,
       });
-      if (!res.ok) {
-        throw new Error("Failed to add asset");
+
+      if (res.ok) {
+        <Alert message="Success Text" type="success" />;
+      } else {
+        const errorText = await res.text();
+        message.error({
+          content: `Something wrong please try again: ${
+            errorText || "Unknown error"
+          }`,
+          key: messageKey,
+          duration: 3,
+        });
+        return;
       }
       setShowForm(false);
       getAllAssets();
     } catch (error) {
-      console.log(error);
+      message.error({
+        content: `Error: ${error.message}`,
+        key: messageKey,
+        duration: 3,
+      });
     }
   };
 
@@ -299,12 +371,12 @@ const ItAssets: React.FC = () => {
           allUsers={allUsers}
         />
       )}
-      {!showForm && (
+      {!showForm && !showEditForm && (
         <>
           <Button
             style={{ alignSelf: "end" }}
             className="px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
-            onClick={handleFetchInForm}
+            onClick={() => setShowForm(true)}
           >
             create new
           </Button>
@@ -320,7 +392,6 @@ const ItAssets: React.FC = () => {
                   dataIndex: "name",
                   key: "name",
                   sorter: (a: Asset, b: Asset) => a.name.localeCompare(b.name),
-                  filters: [],
                 },
                 {
                   title: "Category",
@@ -418,12 +489,21 @@ const ItAssets: React.FC = () => {
                   dataIndex: "operation",
                   render: (_, record: Asset) =>
                     allData.length >= 1 ? (
-                      <Popconfirm
-                        title="Sure to delete?"
-                        onConfirm={() => handleDelete(record.serialNumber)}
-                      >
-                        <DeleteOutlined>Delete</DeleteOutlined>
-                      </Popconfirm>
+                      <div className="flex gap-4">
+                        <EditOutlined
+                          onClick={() => {
+                            setSelectedAsset(record);
+                            setShowEditForm(true);
+                          }}
+                        />
+
+                        <Popconfirm
+                          title="Sure to delete?"
+                          onConfirm={() => handleDelete(record.serialNumber)}
+                        >
+                          <DeleteOutlined />
+                        </Popconfirm>
+                      </div>
                     ) : null,
                 },
               ]}
@@ -449,6 +529,20 @@ const ItAssets: React.FC = () => {
             />
           </ConfigProvider>
         </>
+      )}
+      {/**edit form */}
+      {showEditForm && (
+        <EditITForm
+          onFinish={handleEditAsset}
+          onFinishFailed={onFinishFailed}
+          onClick={() => setShowEditForm(false)}
+          allLocations={allLocations}
+          allCategory={allCategory}
+          suppliers={suppliers}
+          allManufacturers={allManufacturers}
+          allUsers={allUsers}
+          initialValues={selectedAsset}
+        />
       )}
     </motion.div>
   );

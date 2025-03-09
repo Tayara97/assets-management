@@ -1,4 +1,5 @@
 import { Button, Form, Input, Select, DatePicker, InputNumber } from "antd";
+import moment from "moment";
 
 interface ItFormProps {
   onFinish: (values: any) => void;
@@ -11,7 +12,7 @@ interface ItFormProps {
   allUsers: User[];
 }
 
-const ItForm: React.FC<ItFormProps> = ({
+const EditITForm: React.FC<ItFormProps> = ({
   onFinish,
   onFinishFailed,
   onClick,
@@ -26,14 +27,13 @@ const ItForm: React.FC<ItFormProps> = ({
     height: "30px",
     border: "1px solid #d9d9d9",
   };
-
   return (
     <div className="flex flex-col items-center w-[800px] gap-8 bg-white">
       <Button type="default" onClick={onClick} className="self-end">
         X
       </Button>
       <Form
-        name="basic"
+        name="editForm"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
@@ -71,13 +71,7 @@ const ItForm: React.FC<ItFormProps> = ({
         >
           <Input style={inputStyle} />
         </Form.Item>
-        <Form.Item
-          label="Serial Number"
-          name="SerialNumber"
-          rules={[{ required: true, message: "Please input Serial Number" }]}
-        >
-          <Input style={inputStyle} />
-        </Form.Item>
+
         <Form.Item
           label="Purchase Date"
           name="PurchaseDate"
@@ -99,7 +93,7 @@ const ItForm: React.FC<ItFormProps> = ({
           name="PurchasePrice"
           rules={[{ required: true, message: "Please input Purchase Price" }]}
         >
-          <InputNumber />
+          <InputNumber style={inputStyle} />
         </Form.Item>
         <Form.Item
           label="Warranty"
@@ -177,11 +171,7 @@ const ItForm: React.FC<ItFormProps> = ({
             }))}
           />
         </Form.Item>
-        <Form.Item
-          label="Status"
-          name="Status"
-          rules={[{ required: true, message: "Please input Status" }]}
-        >
+        <Form.Item label="Status" name="Status">
           <Select
             style={{ width: 120 }}
             options={[{ value: "Active", label: "Active" }]}
@@ -197,4 +187,4 @@ const ItForm: React.FC<ItFormProps> = ({
   );
 };
 
-export default ItForm;
+export default EditITForm;

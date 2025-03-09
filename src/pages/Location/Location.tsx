@@ -5,6 +5,7 @@ import {
   Table,
   Input,
   ConfigProvider,
+  Alert,
 } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -104,9 +105,9 @@ const Location = () => {
           body: JSON.stringify(values),
         }
       );
-      console.log(response);
       if (response.status === 409) {
         message.error("barcode already exist");
+        <Alert message="Success Text" type="success" />;
         return;
       }
       if (!response.ok) {
@@ -123,7 +124,6 @@ const Location = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-
   const handleDelete = async (id: number) => {
     const selectedItem = locationData.find((item) => item.id === id);
     if (!selectedItem) {
@@ -195,11 +195,22 @@ const Location = () => {
       title: "Barcode",
       dataIndex: "barcode",
       key: "barcode",
+      sorter: (a: LocationData, b: LocationData) =>
+        a.barcode.localeCompare(b.barcode),
     },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+
+      sorter: (a: LocationData, b: LocationData) =>
+        a.name.localeCompare(b.name),
+      filters: locationData.map((location) => {
+        return { text: location.name, value: location.name };
+      }),
+      filterMode: "tree",
+      filterSearch: true,
+      onFilter: (value, record) => record.name.startsWith(value as string),
     },
     {
       title: "Address",

@@ -66,11 +66,15 @@ const TransferAssets: React.FC = () => {
               title: "User",
               dataIndex: "assignedUserName",
               key: "assignedUserName",
+              sorter: (a: Asset, b: Asset) =>
+                a.assignedUserName.localeCompare(b.assignedUserName),
             },
             {
               title: "Location",
               dataIndex: "locationName",
               key: "locationName",
+              sorter: (a: Asset, b: Asset) =>
+                a.locationName.localeCompare(b.locationName),
             },
             {
               title: "Action",

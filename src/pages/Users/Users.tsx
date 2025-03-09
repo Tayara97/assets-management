@@ -120,7 +120,6 @@ const Users = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-
   return (
     <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
       <motion.div>
@@ -146,13 +145,34 @@ const Users = () => {
                   dataIndex: "firstName",
                   sorter: (a: User, b: User) =>
                     a.firstName.localeCompare(b.firstName),
+                  filters: Array.from(
+                    new Set(usersData.map((user) => user.firstName))
+                  ).map((firstName) => ({
+                    text: firstName,
+                    value: firstName,
+                  })),
+
+                  filterMode: "tree",
+                  filterSearch: true,
+                  onFilter: (value, record) =>
+                    record.firstName.startsWith(value as string),
                 },
                 {
                   title: "Last Name",
                   dataIndex: "lastName",
                   sorter: (a: User, b: User) =>
                     a.lastName.localeCompare(b.lastName),
-                  filters: [],
+                  filters: Array.from(
+                    new Set(usersData.map((user) => user.lastName))
+                  ).map((lastName) => ({
+                    text: lastName,
+                    value: lastName,
+                  })),
+
+                  filterMode: "tree",
+                  filterSearch: true,
+                  onFilter: (value, record) =>
+                    record.lastName.startsWith(value as string),
                 },
                 {
                   title: "Email",

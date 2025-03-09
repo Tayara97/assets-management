@@ -1,13 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
 import { Form, Button, Select } from "antd";
 import { Asset } from "./TransferAssets";
 
-interface User {
-  id: string;
-  name: string;
-  barcode: string;
-}
+// interface User {
+//   id: string;
+//   name: string;
+//   barcode: string;
+// }
 
 interface TransferUsersFormProps {
   onFinish: (values: any) => void;
@@ -17,38 +15,8 @@ interface TransferUsersFormProps {
 const TransferUsersForm: React.FC<TransferUsersFormProps> = ({
   onFinish,
   selectedAsset,
+  usersData,
 }) => {
-  const { token } = useContext(AuthContext);
-  const [usersData, setUsersData] = useState<User[]>([]);
-
-  const getAllUsers = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5243/api/Auth/AllUsers/AllUsers`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to get data from the backend");
-      }
-      const data: User[] = await response.json();
-
-      const dataWithKeys = data.map((item) => ({ ...item, key: item.id }));
-      setUsersData(dataWithKeys);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    getAllUsers();
-  }, []);
-
   const options = usersData.filter(
     (item) => item.userId !== selectedAsset.userId
   );

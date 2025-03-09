@@ -89,7 +89,6 @@ const Suppliers = () => {
       if (!response.ok) throw new Error("Failed to get data from the backend");
 
       const data = (await response.json()) as Array<Omit<Supplier, "key">>;
-      console.log(data);
       const suppliersWithKeys = data.map((item) => ({ ...item, key: item.id }));
       setSuppliersData(suppliersWithKeys);
     } catch (error) {
@@ -157,7 +156,13 @@ const Suppliers = () => {
   };
 
   const columns: ColumnsType<Supplier> = [
-    { title: "Company Name", dataIndex: "companyName", key: "companyName" },
+    {
+      title: "Company Name",
+      dataIndex: "companyName",
+      key: "companyName",
+      sorter: (a: Supplier, b: Supplier) =>
+        a.companyName.localeCompare(b.companyName),
+    },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
     { title: "Address", dataIndex: "address", key: "address" },
