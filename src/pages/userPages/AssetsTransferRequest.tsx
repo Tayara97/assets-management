@@ -46,8 +46,6 @@ const AssetsTransferRequest = () => {
         throw new Error("Something went wrong");
       }
 
-      console.log(response);
-
       getAssignedAssets();
     } catch (error) {
       console.log(error);

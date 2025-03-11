@@ -107,18 +107,17 @@ const Location = () => {
       );
       if (response.status === 409) {
         message.error("barcode already exist");
-        <Alert message="Success Text" type="success" />;
         return;
       }
       if (!response.ok) {
         throw new Error("Failed to save data to the backend");
       }
 
-      setShowForm(false);
       getAllLocations();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+    setShowForm(false);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -235,7 +234,7 @@ const Location = () => {
   ];
 
   return (
-    <div>
+    <>
       {!showForm && !editable && (
         <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
           <motion.div>
@@ -280,22 +279,24 @@ const Location = () => {
           </motion.div>
         </ConfigProvider>
       )}
-      {showForm && (
-        <LocationForm
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setShowForm(false)}
-        />
-      )}
-      {editable && selectedLocation && (
-        <LocationEditForm
-          onFinish={handleSubmitEdit}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setEditable(false)}
-          initialValues={selectedLocation}
-        />
-      )}
-    </div>
+      <div className="flex flex-col  items-center">
+        {showForm && (
+          <LocationForm
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            onClick={() => setShowForm(false)}
+          />
+        )}
+        {editable && selectedLocation && (
+          <LocationEditForm
+            onFinish={handleSubmitEdit}
+            onFinishFailed={onFinishFailed}
+            onClick={() => setEditable(false)}
+            initialValues={selectedLocation}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

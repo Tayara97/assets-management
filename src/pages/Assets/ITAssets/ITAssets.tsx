@@ -210,15 +210,6 @@ const ItAssets: React.FC = () => {
     }
   };
 
-  // const handleFetchInForm = async () => {
-  //   setShowForm(true);
-  //   getUsers();
-  //   getLocations();
-  //   getAllCategory();
-  //   getSuppliers();
-  //   getAllManufacturers();
-  // };
-
   const handleEditAsset = async (values: any) => {
     const formattedValues = {
       ...values,
@@ -298,8 +289,7 @@ const ItAssets: React.FC = () => {
     formData.append("CategoryId", formattedValues.CategoryId);
     formData.append("ManufacturerId", formattedValues.ManufacturerId);
     formData.append("SupplierIds", formattedValues.SupplierIds);
-    const messageKey = "addAsset";
-    message.loading({ content: "Adding asset...", key: messageKey });
+
     try {
       const res = await fetch("http://localhost:5243/api/Asset/AddAsset", {
         method: "POST",
@@ -310,26 +300,24 @@ const ItAssets: React.FC = () => {
       });
 
       if (res.ok) {
-        <Alert message="Success Text" type="success" />;
+        setTimeout(() => {
+          message.success("Adding Successfully");
+        }, 2000);
       } else {
-        const errorText = await res.text();
-        message.error({
-          content: `Something wrong please try again: ${
-            errorText || "Unknown error"
-          }`,
-          key: messageKey,
-          duration: 3,
-        });
+        setTimeout(() => {
+          message.success("Failed Adding asset");
+        }, 2000);
+
         return;
       }
       setShowForm(false);
       getAllAssets();
     } catch (error) {
-      message.error({
-        content: `Error: ${error.message}`,
-        key: messageKey,
-        duration: 3,
-      });
+      // message.error({
+      //   content: `Error: ${error.message}`,
+      //   key: messageKey,
+      //   duration: 3,
+      // });
     }
   };
 
@@ -360,16 +348,18 @@ const ItAssets: React.FC = () => {
   return (
     <motion.div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
       {showForm && (
-        <ItForm
-          onFinish={handleAddAsset}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setShowForm(false)}
-          allLocations={allLocations}
-          allCategory={allCategory}
-          suppliers={suppliers}
-          allManufacturers={allManufacturers}
-          allUsers={allUsers}
-        />
+        <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+          <ItForm
+            onFinish={handleAddAsset}
+            onFinishFailed={onFinishFailed}
+            onClick={() => setShowForm(false)}
+            allLocations={allLocations}
+            allCategory={allCategory}
+            suppliers={suppliers}
+            allManufacturers={allManufacturers}
+            allUsers={allUsers}
+          />
+        </ConfigProvider>
       )}
       {!showForm && !showEditForm && (
         <>
@@ -532,17 +522,19 @@ const ItAssets: React.FC = () => {
       )}
       {/**edit form */}
       {showEditForm && (
-        <EditITForm
-          onFinish={handleEditAsset}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setShowEditForm(false)}
-          allLocations={allLocations}
-          allCategory={allCategory}
-          suppliers={suppliers}
-          allManufacturers={allManufacturers}
-          allUsers={allUsers}
-          initialValues={selectedAsset}
-        />
+        <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+          <EditITForm
+            onFinish={handleEditAsset}
+            onFinishFailed={onFinishFailed}
+            onClick={() => setShowEditForm(false)}
+            allLocations={allLocations}
+            allCategory={allCategory}
+            suppliers={suppliers}
+            allManufacturers={allManufacturers}
+            allUsers={allUsers}
+            initialValues={selectedAsset}
+          />
+        </ConfigProvider>
       )}
     </motion.div>
   );

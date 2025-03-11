@@ -1,4 +1,4 @@
-import { Button, Table, message, Popconfirm } from "antd";
+import { Button, Table, message, Popconfirm, ConfigProvider } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useContext, useState, useEffect } from "react";
 import SupplierForm from "../Suppliers/SupplierForm";
@@ -6,7 +6,15 @@ import { AuthContext } from "../../context/AuthContext";
 import SupplierEditForm from "../Suppliers/SupplierEditForm";
 import { motion, AnimatePresence } from "framer-motion";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-
+import { useTheme } from "../../context/ThemeContext";
+const darkTheme = {
+  token: {
+    colorBgContainer: "#202a3f",
+    colorText: "#ffffff",
+    colorBorder: "#434343",
+    colorBgElevated: "#2a2a2a",
+  },
+};
 interface Supplier {
   id: string;
   companyName: string;
@@ -33,6 +41,7 @@ const Suppliers = () => {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
     null
   );
+  const { theme } = useTheme();
 
   const handleShowForm = () => {
     setShowForm(!showForm);
@@ -185,54 +194,58 @@ const Suppliers = () => {
   ];
 
   return (
-    <div>
-      {!showForm && !editable && (
-        <>
-          <Button
-            className="my-4 float-right"
-            type="default"
-            onClick={handleShowForm}
-          >
-            +
-          </Button>
-          <Table
-            columns={columns}
-            dataSource={suppliersData}
-            rowKey="key"
-            components={{
-              body: {
-                row: ({ children, ...props }) => (
-                  <AnimatePresence>
-                    <motion.tr
-                      {...props}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {children}
-                    </motion.tr>
-                  </AnimatePresence>
-                ),
-              },
-            }}
-          />
-        </>
-      )}
-      {showForm && (
-        <SupplierForm
-          onSubmitForm={onSubmitForm}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setShowForm(false)}
-        />
-      )}
-      {editable && (
-        <SupplierEditForm
-          {...{ onFinish: handleSubmitEdit, onFinishFailed }}
-          onClick={() => setEditable(false)}
-        />
-      )}
-    </div>
+    <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+      <div>
+        {!showForm && !editable && (
+          <>
+            <Button
+              className="my-4 float-right"
+              type="default"
+              onClick={handleShowForm}
+            >
+              +
+            </Button>
+            <Table
+              columns={columns}
+              dataSource={suppliersData}
+              rowKey="key"
+              components={{
+                body: {
+                  row: ({ children, ...props }) => (
+                    <AnimatePresence>
+                      <motion.tr
+                        {...props}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {children}
+                      </motion.tr>
+                    </AnimatePresence>
+                  ),
+                },
+              }}
+            />
+          </>
+        )}
+        <div className="flex flex-col  items-center">
+          {showForm && (
+            <SupplierForm
+              onSubmitForm={onSubmitForm}
+              onFinishFailed={onFinishFailed}
+              onClick={() => setShowForm(false)}
+            />
+          )}
+          {editable && (
+            <SupplierEditForm
+              {...{ onFinish: handleSubmitEdit, onFinishFailed }}
+              onClick={() => setEditable(false)}
+            />
+          )}
+        </div>
+      </div>
+    </ConfigProvider>
   );
 };
 

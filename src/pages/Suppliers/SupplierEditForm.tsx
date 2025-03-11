@@ -12,9 +12,14 @@ const SupplierEditForm = ({
   onFinishFailed,
   onClick,
 }: SupplierEditFormProps) => {
+  const inputStyle = {
+    borderRadius: "8px",
+    height: "30px",
+    border: "1px solid #d9d9d9",
+  };
   return (
-    <>
-      <Button type="default" onClick={onClick}>
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-md">
+      <Button type="default" onClick={onClick} className="self-end ">
         X
       </Button>
       <Form
@@ -26,7 +31,7 @@ const SupplierEditForm = ({
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-<Form.Item
+        <Form.Item
           label="Company Name"
           name="companyName"
           rules={[
@@ -36,9 +41,8 @@ const SupplierEditForm = ({
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
-
         <Form.Item
           label="Email"
           name="email"
@@ -49,9 +53,8 @@ const SupplierEditForm = ({
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
-
         <Form.Item
           label="Phone Number"
           name="phoneNumber"
@@ -62,23 +65,21 @@ const SupplierEditForm = ({
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
-
         <Form.Item label="Address" name="address">
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
-
         <Form.Item label="Note" name="note">
           <Input.TextArea />
         </Form.Item>
-
         <Form.Item label={null}>
           <Button type="primary" htmlType="submit">
             Submit
           </Button>
-        </Form.Item>      </Form>
-    </>
+        </Form.Item>{" "}
+      </Form>
+    </div>
   );
 };
 export default SupplierEditForm;

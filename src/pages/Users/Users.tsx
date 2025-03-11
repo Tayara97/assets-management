@@ -1,4 +1,4 @@
-import { Table, Popconfirm, Button, ConfigProvider } from "antd";
+import { Table, Popconfirm, Button, ConfigProvider, message } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useTheme } from "../../context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -82,7 +82,6 @@ const Users = () => {
 
   // Handle form submission
   const handleFormSubmit = async (values: UserFormValues) => {
-    console.log(values);
     const formData = new FormData();
     formData.append("FirstName", values.FirstName);
     formData.append("LastName", values.LastName);
@@ -103,13 +102,13 @@ const Users = () => {
       );
 
       const result = await response.json();
-
+      console.log(result);
       if (response.ok) {
-        alert(result.message || "User added successfully");
+        alert(result.details || "User added successfully");
         setShowForm(false);
         getAllUsers();
       } else {
-        alert(result.message || "Failed to add user");
+        alert(result.details || "Failed to add user");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -224,11 +223,13 @@ const Users = () => {
           </>
         )}
         {showForm && (
-          <UserForm
-            onFinish={handleFormSubmit}
-            onFinishFailed={onFinishFailed}
-            onClick={() => setShowForm(false)}
-          />
+          <div className="flex flex-col items-center">
+            <UserForm
+              onFinish={handleFormSubmit}
+              onFinishFailed={onFinishFailed}
+              onClick={() => setShowForm(false)}
+            />
+          </div>
         )}
       </motion.div>
     </ConfigProvider>

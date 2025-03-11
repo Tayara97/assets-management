@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import React from "react";
+import { Button, Form, Input, Select } from "antd";
 
 interface UserFormProps {
   onFinish: (values: any) => void;
@@ -7,10 +7,19 @@ interface UserFormProps {
   onClick: () => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  onFinish,
+  onFinishFailed,
+  onClick,
+}) => {
+  const inputStyle = {
+    borderRadius: "8px",
+    height: "30px",
+    border: "1px solid #d9d9d9",
+  };
   return (
-    <>
-      <Button type="default" onClick={onClick}>
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-md">
+      <Button type="default" onClick={onClick} className="self-end">
         X
       </Button>
 
@@ -35,11 +44,11 @@ const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }
           rules={[
             {
               required: true,
-              message: 'Please input user First Name',
+              message: "Please input user First Name",
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
         <Form.Item
           label="Last Name"
@@ -47,24 +56,24 @@ const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }
           rules={[
             {
               required: true,
-              message: 'Please input user Last Name',
+              message: "Please input user Last Name",
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
         <Form.Item
           label="Email"
           name="Email"
           rules={[
             {
-              type: 'email',
+              type: "email",
               required: true,
-              message: 'Please input valid email ',
+              message: "Please input valid email ",
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
         <Form.Item
           label="Password"
@@ -72,11 +81,12 @@ const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }
           rules={[
             {
               required: true,
-              message: 'Please input user password ',
+              message: "Please input user password ",
             },
+            { min: 8, message: "Password must be at least 8 characters long." },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
 
         <Form.Item
@@ -85,7 +95,7 @@ const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }
           rules={[
             {
               required: true,
-              message: 'Please input user role ',
+              message: "Please input user role ",
             },
           ]}
         >
@@ -93,16 +103,16 @@ const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }
             style={{ width: 120 }}
             options={[
               {
-                value: 'user',
-                label: 'user',
+                value: "user",
+                label: "user",
               },
               {
-                value: 'manager',
-                label: 'manager',
+                value: "manager",
+                label: "manager",
               },
               {
-                value: 'auditor',
-                label: 'auditor',
+                value: "auditor",
+                label: "auditor",
               },
             ]}
           />
@@ -113,7 +123,7 @@ const UserForm: React.FC<UserFormProps> = ({ onFinish, onFinishFailed, onClick }
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </div>
   );
 };
 

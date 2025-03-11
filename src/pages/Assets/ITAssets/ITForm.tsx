@@ -28,8 +28,12 @@ const ItForm: React.FC<ItFormProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center w-[800px] gap-8 bg-white">
-      <Button type="default" onClick={onClick} className="self-end">
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6 ">
+      <Button
+        type="default"
+        onClick={onClick}
+        className="self-end ant-btn css-dev-only-do-not-override-240cud ant-btn-default ant-btn-color-default ant-btn-variant-outlined px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 "
+      >
         X
       </Button>
       <Form

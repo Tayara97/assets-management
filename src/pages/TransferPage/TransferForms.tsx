@@ -68,29 +68,6 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     getAllAssets();
     setShowAllForms(false);
   };
-  const getAllUsers = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5243/api/Auth/AllUsers/AllUsers`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to get data from the backend");
-      }
-      const data: User[] = await response.json();
-
-      const dataWithKeys = data.map((item) => ({ ...item, key: item.id }));
-      setUsersData(dataWithKeys);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   const handleUserTransfer = async (values: any) => {
     const formToSend = {
@@ -115,6 +92,30 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     getAllAssets();
     setShowAllForms(false);
   };
+  const getAllUsers = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5243/api/Auth/AllUsers/AllUsers`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to get data from the backend");
+      }
+      const data: User[] = await response.json();
+
+      const dataWithKeys = data.map((item) => ({ ...item, key: item.id }));
+      setUsersData(dataWithKeys);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const handleLocationAndUser = async (values: any) => {
     const formToSend = {
       ...values,

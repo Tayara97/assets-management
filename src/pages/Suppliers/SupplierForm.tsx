@@ -20,6 +20,11 @@ const SupplierForm = ({
   onFinishFailed,
   onClick,
 }: SupplierFormProps) => {
+  const inputStyle = {
+    borderRadius: "8px",
+    height: "30px",
+    border: "1px solid #d9d9d9",
+  };
   return (
     <>
       <Button type="default" onClick={onClick}>
@@ -34,7 +39,7 @@ const SupplierForm = ({
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-<Form.Item
+        <Form.Item
           label="Company Name"
           name="companyName"
           rules={[
@@ -44,7 +49,7 @@ const SupplierForm = ({
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
 
         <Form.Item
@@ -57,7 +62,7 @@ const SupplierForm = ({
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
 
         <Form.Item
@@ -70,11 +75,11 @@ const SupplierForm = ({
             },
           ]}
         >
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
 
         <Form.Item label="Address" name="address">
-          <Input />
+          <Input style={inputStyle} />
         </Form.Item>
 
         <Form.Item label="Note" name="note">
@@ -86,7 +91,7 @@ const SupplierForm = ({
             Submit
           </Button>
         </Form.Item>
-              </Form>
+      </Form>
     </>
   );
 };
