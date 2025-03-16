@@ -18,7 +18,7 @@ const UserForm: React.FC<UserFormProps> = ({
     border: "1px solid #d9d9d9",
   };
   return (
-    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-md">
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6 ">
       <Button type="default" onClick={onClick} className="self-end">
         X
       </Button>
@@ -48,7 +48,7 @@ const UserForm: React.FC<UserFormProps> = ({
             },
           ]}
         >
-          <Input style={inputStyle} />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Last Name"
@@ -60,7 +60,7 @@ const UserForm: React.FC<UserFormProps> = ({
             },
           ]}
         >
-          <Input style={inputStyle} />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Email"
@@ -73,7 +73,7 @@ const UserForm: React.FC<UserFormProps> = ({
             },
           ]}
         >
-          <Input style={inputStyle} />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Password"
@@ -86,7 +86,7 @@ const UserForm: React.FC<UserFormProps> = ({
             { min: 8, message: "Password must be at least 8 characters long." },
           ]}
         >
-          <Input style={inputStyle} />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
 
         <Form.Item

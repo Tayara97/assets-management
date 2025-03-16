@@ -54,7 +54,7 @@ const adminNavItems: NavItem[] = [
     name: "Assets",
     subItems: [
       { name: "IT Assets", path: "/itassets" },
-      { name: "Non IT Assets", path: "/nonitassets" },
+      // { name: "Non IT Assets", path: "/nonitassets" },
     ],
   },
 

@@ -8,12 +8,8 @@ import {
   Alert,
 } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  SearchOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import { useContext, useEffect, useState } from "react";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useContext, useEffect, useState, useMe } from "react";
 import LocationForm from "../Location/LocationForm";
 import { AuthContext } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -56,6 +52,7 @@ const Location = () => {
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
     null
   );
+  const [messageApi, contextHolder] = message.useMessage();
 
   const getAllLocations = async () => {
     try {
@@ -91,8 +88,8 @@ const Location = () => {
   const handleShowForm = () => {
     setShowForm(!showForm);
   };
-
   const onFinish = async (values: LocationFormValues) => {
+    messageApi.destroy();
     try {
       const response = await fetch(
         "http://localhost:5243/api/Location/AddLocation/add",
@@ -106,13 +103,28 @@ const Location = () => {
         }
       );
       if (response.status === 409) {
-        message.error("barcode already exist");
+        messageApi.open({
+          type: "error",
+          content: "Barcode is already exist",
+
+          className: "custom-class",
+          style: {
+            marginTop: "10vh",
+          },
+        });
+
         return;
       }
       if (!response.ok) {
         throw new Error("Failed to save data to the backend");
       }
-
+      messageApi.open({
+        type: "success",
+        content: "added successfully",
+        style: {
+          marginTop: "10vh",
+        },
+      });
       getAllLocations();
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -235,8 +247,9 @@ const Location = () => {
 
   return (
     <>
-      {!showForm && !editable && (
-        <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+      {contextHolder}
+      <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+        {!showForm && !editable && (
           <motion.div>
             <Input
               className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-8 pr-8 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
@@ -251,7 +264,7 @@ const Location = () => {
               type="default"
               onClick={handleShowForm}
             >
-              +
+              Create new
             </Button>
             <Table
               columns={columns}
@@ -277,25 +290,31 @@ const Location = () => {
               }}
             />
           </motion.div>
-        </ConfigProvider>
+        )}
+      </ConfigProvider>
+      {showForm && (
+        <div className="flex flex-col  items-center">
+          <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+            <LocationForm
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              onClick={() => setShowForm(false)}
+            />
+          </ConfigProvider>
+        </div>
       )}
-      <div className="flex flex-col  items-center">
-        {showForm && (
-          <LocationForm
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            onClick={() => setShowForm(false)}
-          />
-        )}
-        {editable && selectedLocation && (
-          <LocationEditForm
-            onFinish={handleSubmitEdit}
-            onFinishFailed={onFinishFailed}
-            onClick={() => setEditable(false)}
-            initialValues={selectedLocation}
-          />
-        )}
-      </div>
+      {editable && selectedLocation && (
+        <div className="flex flex-col  items-center">
+          <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+            <LocationEditForm
+              onFinish={handleSubmitEdit}
+              onFinishFailed={onFinishFailed}
+              onClick={() => setEditable(false)}
+              initialValues={selectedLocation}
+            />
+          </ConfigProvider>
+        </div>
+      )}
     </>
   );
 };

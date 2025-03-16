@@ -20,6 +20,7 @@ const TransferForms: React.FC<TransferFormsProps> = ({
   const [showForm, setShowForm] = useState<string | null>(null);
   const [locationData, setLocationData] = useState<Location[]>([]);
   const [usersData, setUsersData] = useState<User[]>([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   //get location and handle transfer
   const getAllLocations = async () => {
@@ -68,8 +69,9 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     getAllAssets();
     setShowAllForms(false);
   };
-
+  console.log(messageApi, contextHolder);
   const handleUserTransfer = async (values: any) => {
+    messageApi.destroy();
     const formToSend = {
       ...values,
       assetSerialNumber: selectedAsset.serialNumber,
@@ -88,9 +90,14 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     if (!res.ok) {
       throw new Error("Failed to get data from the backend");
     }
-
-    getAllAssets();
+    if (res.ok) {
+      messageApi.success({
+        content: "Waiting for approval",
+        style: { marginTop: "10vh" },
+      });
+    }
     setShowAllForms(false);
+    getAllAssets();
   };
   const getAllUsers = async () => {
     try {
@@ -115,7 +122,6 @@ const TransferForms: React.FC<TransferFormsProps> = ({
       console.error("Error:", error);
     }
   };
-
   const handleLocationAndUser = async (values: any) => {
     const formToSend = {
       ...values,
@@ -148,6 +154,7 @@ const TransferForms: React.FC<TransferFormsProps> = ({
 
   return (
     <>
+      {contextHolder}
       <Button onClick={() => setShowAllForms(false)}>Back</Button>
       <div className="flex justify-center gap-8 mt-16">
         <Button onClick={() => setShowForm("user")}>Transfer User</Button>

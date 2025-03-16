@@ -13,22 +13,17 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({
   onFinishFailed,
 }) => {
   return (
-    <>
-      <Button type="default" onClick={onClick}>
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6 ">
+      <Button type="default" onClick={onClick} className="self-end ">
         X
       </Button>
       <Form
         name="basic"
         labelCol={{
-          span: 8,
+          span: 10,
         }}
         wrapperCol={{
-          span: 16,
-        }}
-        style={{
-          width: 600,
-          border: "1px solid #094d7d",
-          padding: "30px",
+          span: 18,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -44,11 +39,11 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({
             },
           ]}
         >
-          <Input />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
 
         <Form.Item label="description" name="description">
-          <Input />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="serial Code"
@@ -60,10 +55,10 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({
             },
           ]}
         >
-          <Input />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item label="parent Category Id" name="parentCategoryId">
-          <Input />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item label={null}>
           <Button type="primary" htmlType="submit">
@@ -71,7 +66,7 @@ const CategoriesForm: React.FC<CategoriesFormProps> = ({
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </div>
   );
 };
 

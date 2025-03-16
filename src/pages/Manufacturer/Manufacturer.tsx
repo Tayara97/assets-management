@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Button, message, Popconfirm, Table, Space } from "antd";
+import { useTheme } from "../../context/ThemeContext";
+
+import { Button, Popconfirm, Table, ConfigProvider } from "antd";
 import { AuthContext } from "../../context/AuthContext";
 import ManufacturerEditForm from "./ManufacturerEditForm";
 import ManufacturerAddForm from "./ManufacturerAddForm";
@@ -10,8 +12,17 @@ interface ManufactureData {
   info: string;
   key?: string;
 }
-
+const darkTheme = {
+  token: {
+    colorBgContainer: "#202a3f",
+    colorText: "#ffffff",
+    colorBorder: "#434343",
+    colorBgElevated: "#2a2a2a",
+  },
+};
 const Manufacturer: React.FC = () => {
+  const { theme } = useTheme();
+
   const { token } = useContext(AuthContext);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [manufactureData, setManufactureData] = useState<ManufactureData[]>([]);
@@ -151,68 +162,76 @@ const Manufacturer: React.FC = () => {
   };
 
   return (
-    <div>
-      {!showForm && !editable && (
-        <>
-          {" "}
-          <Button
-            type="default"
-            onClick={handleShowForm}
-            style={{ float: "right" }}
-          >
-            +
-          </Button>
-          <Table
-            columns={[
-              {
-                title: "Name",
-                dataIndex: "name",
-                key: "name",
-              },
-              {
-                title: "Info",
-                dataIndex: "info",
-                key: "info",
-              },
-              {
-                title: "operation",
-                dataIndex: "operation",
-                render: (_: any, record: ManufactureData) =>
-                  manufactureData.length >= 1 ? (
-                    <div className="flex gap-3">
-                      <Button onClick={() => showEditForm(record)}>edit</Button>
+    <>
+      <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+        {!showForm && !editable && (
+          <>
+            <Button
+              type="default"
+              onClick={handleShowForm}
+              className="my-4 float-right"
+            >
+              Create new
+            </Button>
+            <Table
+              columns={[
+                {
+                  title: "Name",
+                  dataIndex: "name",
+                  key: "name",
+                },
+                {
+                  title: "Info",
+                  dataIndex: "info",
+                  key: "info",
+                },
+                {
+                  title: "operation",
+                  dataIndex: "operation",
+                  render: (_: any, record: ManufactureData) =>
+                    manufactureData.length >= 1 ? (
+                      <div className="flex gap-3">
+                        <Button onClick={() => showEditForm(record)}>
+                          edit
+                        </Button>
 
-                      <Popconfirm
-                        title="Sure to delete?"
-                        onConfirm={() => handleDelete(record.key!)}
-                      >
-                        <Button>Delete</Button>
-                      </Popconfirm>
-                    </div>
-                  ) : null,
-              },
-            ]}
-            dataSource={
-              searchedData.length > 0 ? searchedData : manufactureData
-            }
-          />
-        </>
-      )}
-      {showForm && (
-        <ManufacturerAddForm
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setShowForm(false)}
-        />
-      )}
-      {editable && (
-        <ManufacturerEditForm
-          onFinish={handleSubmitEdit}
-          onFinishFailed={onFinishFailed}
-          onClick={() => setEditable(false)}
-        />
-      )}
-    </div>
+                        <Popconfirm
+                          title="Sure to delete?"
+                          onConfirm={() => handleDelete(record.key!)}
+                        >
+                          <Button>Delete</Button>
+                        </Popconfirm>
+                      </div>
+                    ) : null,
+                },
+              ]}
+              dataSource={
+                searchedData.length > 0 ? searchedData : manufactureData
+              }
+            />
+          </>
+        )}
+        {showForm && (
+          <div className="flex flex-col  items-center">
+            <ManufacturerAddForm
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              onClick={() => setShowForm(false)}
+            />
+          </div>
+        )}
+
+        {editable && (
+          <div className="flex flex-col  items-center">
+            <ManufacturerEditForm
+              onFinish={handleSubmitEdit}
+              onFinishFailed={onFinishFailed}
+              onClick={() => setEditable(false)}
+            />
+          </div>
+        )}
+      </ConfigProvider>
+    </>
   );
 };
 

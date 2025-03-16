@@ -32,7 +32,6 @@ const AssignedAssets = () => {
   }, []);
   return (
     <Table
-      className="table"
       columns={[
         {
           title: "Name",

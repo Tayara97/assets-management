@@ -13,8 +13,8 @@ const ManufacturerEditForm: React.FC<ManufactureEditFormProps> = ({
   onClick,
 }) => {
   return (
-    <>
-      <Button type="default" onClick={onClick}>
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6 ">
+      <Button type="default" onClick={onClick} className="self-end ">
         X
       </Button>
 
@@ -43,7 +43,7 @@ const ManufacturerEditForm: React.FC<ManufactureEditFormProps> = ({
             },
           ]}
         >
-          <Input />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="info"
@@ -55,7 +55,7 @@ const ManufacturerEditForm: React.FC<ManufactureEditFormProps> = ({
             },
           ]}
         >
-          <Input />
+          <Input.TextArea />
         </Form.Item>
 
         <Form.Item label={null}>
@@ -64,7 +64,7 @@ const ManufacturerEditForm: React.FC<ManufactureEditFormProps> = ({
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </div>
   );
 };
 

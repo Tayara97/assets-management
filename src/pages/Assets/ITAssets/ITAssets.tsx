@@ -63,6 +63,7 @@ interface ColumnsFilterItem {
 const ItAssets: React.FC = () => {
   const { theme } = useTheme();
   const { token } = useContext(AuthContext);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [showForm, setShowForm] = useState<boolean>(false);
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
@@ -252,8 +253,26 @@ const ItAssets: React.FC = () => {
         }
       );
       if (!res.ok) {
+        const error = await res.json();
+        messageApi.open({
+          type: "error",
+          content: error.error,
+
+          style: {
+            marginTop: "10vh",
+          },
+        });
         throw new Error("Failed to add asset");
       }
+      messageApi.open({
+        type: "success",
+        content: "Updated successfully",
+
+        style: {
+          marginTop: "10vh",
+        },
+      });
+
       setShowEditForm(false);
       getAllAssets();
     } catch (error) {
@@ -261,6 +280,7 @@ const ItAssets: React.FC = () => {
     }
   };
   const handleAddAsset = async (values: any) => {
+    messageApi.destroy();
     const formattedValues = {
       ...values,
       PurchaseDate: values.PurchaseDate?.format("YYYY-MM-DD"),
@@ -299,25 +319,31 @@ const ItAssets: React.FC = () => {
         body: formData,
       });
 
-      if (res.ok) {
-        setTimeout(() => {
-          message.success("Adding Successfully");
-        }, 2000);
-      } else {
-        setTimeout(() => {
-          message.success("Failed Adding asset");
-        }, 2000);
+      if (!res.ok) {
+        const error = await res.json();
+        messageApi.open({
+          type: "error",
+          content: error.error,
 
-        return;
+          style: {
+            marginTop: "10vh",
+          },
+        });
+        throw new Error("Failed to add asset");
       }
+      messageApi.open({
+        type: "success",
+        content: "added successfully",
+
+        style: {
+          marginTop: "10vh",
+        },
+      });
+
       setShowForm(false);
       getAllAssets();
     } catch (error) {
-      // message.error({
-      //   content: `Error: ${error.message}`,
-      //   key: messageKey,
-      //   duration: 3,
-      // });
+      console.error(error);
     }
   };
 
@@ -326,6 +352,8 @@ const ItAssets: React.FC = () => {
   };
 
   const handleDelete = async (key: string) => {
+    messageApi.destroy();
+
     try {
       const res = await fetch(
         `http://localhost:5243/api/Asset/DeleteAsset/${key}`,
@@ -339,7 +367,10 @@ const ItAssets: React.FC = () => {
       if (!res.ok) {
         throw new Error("Failed to delete item");
       }
-
+      message.success({
+        style: { marginTop: "10vh" },
+        content: "Deleted successfully",
+      });
       getAllAssets();
     } catch (error) {
       console.log(error);
@@ -347,6 +378,7 @@ const ItAssets: React.FC = () => {
   };
   return (
     <motion.div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
+      {contextHolder}
       {showForm && (
         <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
           <ItForm

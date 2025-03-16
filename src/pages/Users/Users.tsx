@@ -36,7 +36,7 @@ const Users = () => {
   const [usersData, setUsersData] = useState<User[]>([]);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [searchInput, setSearchInput] = useState<string>("");
-
+  const [messageApi, contextHolder] = message.useMessage();
   // Fetch all users
   const getAllUsers = async () => {
     try {
@@ -57,7 +57,6 @@ const Users = () => {
 
       const data: User[] = await response.json();
 
-      // Add `key` for Ant Design Table
       const usersWithKeys = data.map((item) => ({
         ...item,
         key: item.userId,
@@ -101,14 +100,27 @@ const Users = () => {
         }
       );
 
-      const result = await response.json();
-      console.log(result);
       if (response.ok) {
-        alert(result.details || "User added successfully");
+        messageApi.open({
+          type: "success",
+          content: "added successfully",
+          style: {
+            marginTop: "10vh",
+          },
+        });
         setShowForm(false);
         getAllUsers();
       } else {
-        alert(result.details || "Failed to add user");
+        const error = await response.json();
+        messageApi.open({
+          type: "error",
+          content: error.details,
+
+          className: "custom-class",
+          style: {
+            marginTop: "10vh",
+          },
+        });
       }
     } catch (error) {
       console.error("Error:", error);
@@ -122,6 +134,7 @@ const Users = () => {
   return (
     <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
       <motion.div>
+        {contextHolder}
         {!showForm && (
           <>
             {/* <Input

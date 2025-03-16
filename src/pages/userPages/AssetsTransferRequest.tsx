@@ -77,7 +77,6 @@ const AssetsTransferRequest = () => {
 
   return (
     <Table
-      className="table"
       columns={[
         {
           title: "Asset Name",
