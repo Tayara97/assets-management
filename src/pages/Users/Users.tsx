@@ -81,6 +81,7 @@ const Users = () => {
 
   // Handle form submission
   const handleFormSubmit = async (values: UserFormValues) => {
+    messageApi.destroy();
     const formData = new FormData();
     formData.append("FirstName", values.FirstName);
     formData.append("LastName", values.LastName);

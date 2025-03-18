@@ -1,19 +1,24 @@
 import { useState, useContext, useEffect } from "react";
 import { Table, Popconfirm, Button, ConfigProvider, message } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteTwoTone, EditOutlined, EditTwoTone } from "@ant-design/icons";
 import { useTheme } from "../../../context/ThemeContext";
 import { AuthContext } from "../../../context/AuthContext";
 import ItForm from "./ITForm";
 import Badge from "../../../components/ui/badge/Badge";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, color } from "framer-motion";
 import EditITForm from "./EditITForm";
 
 const darkTheme = {
   token: {
-    colorBgContainer: "#202a3f",
+    colorBgContainer: "transparent",
     colorText: "#ffffff",
     colorBorder: "#434343",
     colorBgElevated: "#2a2a2a",
+  },
+  components: {
+    Table: {
+      headerBg: "rgb(52 64 84 / 95%)",
+    },
   },
 };
 interface Asset {
@@ -377,10 +382,10 @@ const ItAssets: React.FC = () => {
     }
   };
   return (
-    <motion.div className="assets_container flex flex-col gap-5 items-center py-0 px-30">
+    <motion.div className="assets_container flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
       {contextHolder}
       {showForm && (
-        <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+        <ConfigProvider theme={theme === "dark" ? darkTheme : {}}>
           <ItForm
             onFinish={handleAddAsset}
             onFinishFailed={onFinishFailed}
@@ -405,9 +410,26 @@ const ItAssets: React.FC = () => {
           <h1 className="text-4xl font-semibold text-gray-800 dark:text-white/90">
             IT Assets
           </h1>
-          <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+          <ConfigProvider
+            theme={
+              theme === "dark"
+                ? darkTheme
+                : {
+                    components: {
+                      Table: {
+                        headerBg: "#f9fafb",
+                        boxShadow: "0 0 10px 0 rgba(0,0,0,0.1)",
+                      },
+                    },
+                  }
+            }
+          >
             <Table
-              className="table"
+              virtual={true}
+              sticky
+              rowClassName={(_, index) => {
+                return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+              }}
               columns={[
                 {
                   title: "Name",
@@ -431,6 +453,7 @@ const ItAssets: React.FC = () => {
                 },
                 {
                   title: "Model Number",
+                  width: 150,
                   dataIndex: "modelNumber",
                   key: "modelNumber",
                   sorter: (a: Asset, b: Asset) =>
@@ -438,6 +461,7 @@ const ItAssets: React.FC = () => {
                 },
                 {
                   title: "Serial Number",
+                  width: 150,
                   dataIndex: "serialNumber",
                   key: "serialNumber",
                   sorter: (a: Asset, b: Asset) =>
@@ -455,11 +479,13 @@ const ItAssets: React.FC = () => {
                 },
                 {
                   title: "Warranty",
+                  align: "center",
                   dataIndex: "warrantyExpiryDate",
                   key: "warrantyExpiryDate",
                 },
                 {
                   title: "Assigned to",
+                  width: 150,
                   dataIndex: "assignedUserName",
                   key: "assignedUserName",
                   sorter: (a: Asset, b: Asset) =>
@@ -490,6 +516,7 @@ const ItAssets: React.FC = () => {
                   title: "Status",
                   dataIndex: "status",
                   key: "status",
+                  align: "center",
                   render: (_, record: Asset) => {
                     return (
                       <Badge
@@ -508,11 +535,13 @@ const ItAssets: React.FC = () => {
                 },
                 {
                   title: "Operation",
+                  align: "center",
+
                   dataIndex: "operation",
                   render: (_, record: Asset) =>
                     allData.length >= 1 ? (
-                      <div className="flex gap-4">
-                        <EditOutlined
+                      <div className="flex gap-6 justify-center">
+                        <EditTwoTone
                           onClick={() => {
                             setSelectedAsset(record);
                             setShowEditForm(true);
@@ -523,7 +552,7 @@ const ItAssets: React.FC = () => {
                           title="Sure to delete?"
                           onConfirm={() => handleDelete(record.serialNumber)}
                         >
-                          <DeleteOutlined />
+                          <DeleteTwoTone twoToneColor="#eb2f96" />
                         </Popconfirm>
                       </div>
                     ) : null,

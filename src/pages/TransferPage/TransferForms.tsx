@@ -47,6 +47,7 @@ const TransferForms: React.FC<TransferFormsProps> = ({
   };
 
   const handleLocation = async (values: any) => {
+    messageApi.destroy();
     const formToSend = {
       ...values,
       assetSerialNumber: selectedAsset.serialNumber,
@@ -66,10 +67,19 @@ const TransferForms: React.FC<TransferFormsProps> = ({
       throw new Error("Failed to get data from the backend");
     }
 
+    messageApi.open({
+      type: "success",
+
+      content: "Transferd Successfully",
+      style: {
+        marginTop: "10vh",
+      },
+    });
+    setTimeout(() => {
+      setShowAllForms(false);
+    }, 1000);
     getAllAssets();
-    setShowAllForms(false);
   };
-  console.log(messageApi, contextHolder);
   const handleUserTransfer = async (values: any) => {
     messageApi.destroy();
     const formToSend = {
@@ -90,13 +100,17 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     if (!res.ok) {
       throw new Error("Failed to get data from the backend");
     }
-    if (res.ok) {
-      messageApi.success({
-        content: "Waiting for approval",
-        style: { marginTop: "10vh" },
-      });
-    }
-    setShowAllForms(false);
+
+    messageApi.open({
+      type: "success",
+      content: "Waiting to approve",
+      style: {
+        marginTop: "10vh",
+      },
+    });
+    setTimeout(() => {
+      setShowAllForms(false);
+    }, 1000);
     getAllAssets();
   };
   const getAllUsers = async () => {
@@ -123,6 +137,7 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     }
   };
   const handleLocationAndUser = async (values: any) => {
+    messageApi.destroy();
     const formToSend = {
       ...values,
       assetSerialNumber: selectedAsset.serialNumber,
@@ -141,17 +156,23 @@ const TransferForms: React.FC<TransferFormsProps> = ({
     if (!res.ok) {
       throw new Error("Failed to get data from the backend");
     }
-
+    messageApi.open({
+      type: "success",
+      content: "Waiting to approve",
+      style: {
+        marginTop: "10vh",
+      },
+    });
     getAllAssets();
-    setShowAllForms(false);
-    console.log(res);
+    setTimeout(() => {
+      setShowAllForms(false);
+    }, 1000);
   };
 
   useEffect(() => {
     getAllLocations();
     getAllUsers();
   }, []);
-
   return (
     <>
       {contextHolder}

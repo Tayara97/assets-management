@@ -24,6 +24,7 @@ const AssetsTransferRequest = () => {
 
       const dataWithKeys = data.map((item, i) => ({ ...item, key: i }));
       setAssignedAssets(dataWithKeys);
+      console.log(dataWithKeys);
     } catch (error) {
       console.log(error);
     }

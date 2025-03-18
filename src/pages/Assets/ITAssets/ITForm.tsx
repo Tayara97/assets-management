@@ -22,7 +22,7 @@ const ItForm: React.FC<ItFormProps> = ({
   allUsers,
 }) => {
   return (
-    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6 ">
+    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-[#101828] sm:px-6 sm:pt-6 ">
       <Button
         type="default"
         onClick={onClick}
@@ -44,7 +44,7 @@ const ItForm: React.FC<ItFormProps> = ({
           name="Name"
           rules={[{ required: true, message: "Please input Asset name" }]}
         >
-          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-transparent dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Category"
@@ -55,7 +55,6 @@ const ItForm: React.FC<ItFormProps> = ({
             showSearch
             optionFilterProp="children"
             placeholder="Select Category"
-            style={{ width: 120 }}
             options={allCategory.map((cat) => ({
               label: cat.name,
               value: cat.serialCode,
@@ -67,14 +66,14 @@ const ItForm: React.FC<ItFormProps> = ({
           name="ModelNumber"
           rules={[{ required: true, message: "Please input Model Number" }]}
         >
-          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-transparent dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Serial Number"
           name="SerialNumber"
           rules={[{ required: true, message: "Please input Serial Number" }]}
         >
-          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-transparent dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Purchase Date"
@@ -97,7 +96,7 @@ const ItForm: React.FC<ItFormProps> = ({
           name="PurchasePrice"
           rules={[{ required: true, message: "Please input Purchase Price" }]}
         >
-          <InputNumber />
+          <InputNumber className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-transparent dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Warranty"
@@ -129,7 +128,6 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input location" }]}
         >
           <Select
-            style={{ width: 120 }}
             options={allLocations.map((obj) => ({
               label: obj.name,
               value: obj.id,
@@ -142,7 +140,6 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input Manufacturer" }]}
         >
           <Select
-            style={{ width: 120 }}
             options={allManufacturers.map((obj) => ({
               label: obj.name,
               value: obj.id,
@@ -155,7 +152,6 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input user" }]}
         >
           <Select
-            style={{ width: 120 }}
             options={allUsers.map((obj) => ({
               label: obj.firstName,
               value: obj.userId,
@@ -168,7 +164,6 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input supplier" }]}
         >
           <Select
-            style={{ width: 120 }}
             options={suppliers.map((obj) => ({
               label: obj.email,
               value: obj.id,
@@ -180,10 +175,7 @@ const ItForm: React.FC<ItFormProps> = ({
           name="Status"
           rules={[{ required: true, message: "Please input Status" }]}
         >
-          <Select
-            style={{ width: 120 }}
-            options={[{ value: "Active", label: "Active" }]}
-          />
+          <Select options={[{ value: "Active", label: "Active" }]} />
         </Form.Item>
         <Form.Item label={null}>
           <Button type="primary" htmlType="submit">

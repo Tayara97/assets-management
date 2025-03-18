@@ -5,10 +5,9 @@ import {
   Table,
   Input,
   ConfigProvider,
-  Alert,
 } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { useContext, useEffect, useState, useMe } from "react";
 import LocationForm from "../Location/LocationForm";
 import { AuthContext } from "../../context/AuthContext";
@@ -175,8 +174,8 @@ const Location = () => {
   };
 
   const handleSubmitEdit = async (values: LocationEditFormValues) => {
+    messageApi.destroy();
     if (!selectedLocation) return;
-
     try {
       const response = await fetch(
         `http://localhost:5243/api/Location/UpdateLocation/update/${selectedLocation.barcode}`,
@@ -193,7 +192,13 @@ const Location = () => {
       if (!response.ok) {
         throw new Error("Failed to save data to the backend");
       }
-
+      messageApi.open({
+        type: "success",
+        content: "Updated successfully",
+        style: {
+          marginTop: "10vh",
+        },
+      });
       setEditable(false);
       getAllLocations();
     } catch (error) {
@@ -233,12 +238,12 @@ const Location = () => {
       dataIndex: "operation",
       render: (_, record) => (
         <div className="operation-btns flex gap-3">
-          <EditOutlined onClick={() => showEditForm(record)}>Edit</EditOutlined>
+          <EditTwoTone onClick={() => showEditForm(record)}>Edit</EditTwoTone>
           <Popconfirm
             title="Sure to delete?"
             onConfirm={() => handleDelete(record.key)}
           >
-            <DeleteOutlined>Delete</DeleteOutlined>
+            <DeleteTwoTone twoToneColor="#eb2f96" />
           </Popconfirm>
         </div>
       ),
