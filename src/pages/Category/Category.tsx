@@ -4,7 +4,7 @@ import { Button, message, Table, Popconfirm, ConfigProvider } from "antd";
 import { AuthContext } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteTwoTone } from "@ant-design/icons";
 
 interface CategoryData {
   id: string;
@@ -130,13 +130,57 @@ const Category: React.FC = () => {
       console.error("Error:", error);
     }
   };
-
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      showSorterTooltip: {
+        target: "full-header",
+      },
+      filters: [
+        {
+          text: "Joe",
+          value: "Joe",
+        },
+        {
+          text: "Jim",
+          value: "Jim",
+        },
+      ],
+      onFilter: (value: string, record: CategoryData) =>
+        record.name.indexOf(value) === 0,
+      sorter: (a: CategoryData, b: CategoryData) =>
+        a.name.length - b.name.length,
+      sortDirections: ["descend"],
+    },
+    {
+      title: "serial code",
+      dataIndex: "serialCode",
+    },
+    {
+      title: "description",
+      dataIndex: "description",
+    },
+    {
+      title: "operation",
+      dataIndex: "operation",
+      render: (_: any, record: CategoryData) =>
+        tableData.length >= 1 ? (
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => handleDelete(record.key!)}
+          >
+            <DeleteTwoTone twoToneColor="#eb2f96">Delete</DeleteTwoTone>
+          </Popconfirm>
+        ) : null,
+    },
+  ];
   return (
-    <>
+    <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
       <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
         {!showCategoryForm && (
           <Button
-            className="float-right my-4"
+            className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
             onClick={() => setShowCategoryForm(true)}
           >
             Create new
@@ -153,51 +197,17 @@ const Category: React.FC = () => {
         )}
         {!showCategoryForm && (
           <Table
-            columns={[
-              {
-                title: "Name",
-                dataIndex: "name",
-                showSorterTooltip: {
-                  target: "full-header",
-                },
-                filters: [
-                  {
-                    text: "Joe",
-                    value: "Joe",
-                  },
-                  {
-                    text: "Jim",
-                    value: "Jim",
-                  },
-                ],
-                onFilter: (value: string, record: CategoryData) =>
-                  record.name.indexOf(value) === 0,
-                sorter: (a: CategoryData, b: CategoryData) =>
-                  a.name.length - b.name.length,
-                sortDirections: ["descend"],
-              },
-              {
-                title: "serial code",
-                dataIndex: "serialCode",
-              },
-              {
-                title: "description",
-                dataIndex: "description",
-              },
-              {
-                title: "operation",
-                dataIndex: "operation",
-                render: (_: any, record: CategoryData) =>
-                  tableData.length >= 1 ? (
-                    <Popconfirm
-                      title="Sure to delete?"
-                      onConfirm={() => handleDelete(record.key!)}
-                    >
-                      <DeleteOutlined>Delete</DeleteOutlined>
-                    </Popconfirm>
-                  ) : null,
-              },
-            ]}
+            style={{
+              marginBottom: "10px",
+              boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
+            }}
+            pagination={{ pageSize: 8 }}
+            virtual={true}
+            sticky
+            rowClassName={(_, index) => {
+              return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+            }}
+            columns={columns}
             dataSource={tableData}
             components={{
               body: {
@@ -222,7 +232,7 @@ const Category: React.FC = () => {
           />
         )}
       </ConfigProvider>
-    </>
+    </div>
   );
 };
 

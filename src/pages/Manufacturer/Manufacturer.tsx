@@ -2,6 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { useTheme } from "../../context/ThemeContext";
 
 import { Button, Popconfirm, Table, ConfigProvider } from "antd";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+
 import { AuthContext } from "../../context/AuthContext";
 import ManufacturerEditForm from "./ManufacturerEditForm";
 import ManufacturerAddForm from "./ManufacturerAddForm";
@@ -160,51 +162,59 @@ const Manufacturer: React.FC = () => {
       console.error("Error submitting form:", error);
     }
   };
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Info",
+      dataIndex: "info",
+      key: "info",
+    },
+    {
+      title: "operation",
+      dataIndex: "operation",
+      render: (_: any, record: ManufactureData) =>
+        manufactureData.length >= 1 ? (
+          <div className="flex gap-3">
+            <EditTwoTone onClick={() => showEditForm(record)}>edit</EditTwoTone>
 
+            <Popconfirm
+              title="Sure to delete?"
+              onConfirm={() => handleDelete(record.key!)}
+            >
+              <DeleteTwoTone twoToneColor="#eb2f96">Delete</DeleteTwoTone>
+            </Popconfirm>
+          </div>
+        ) : null,
+    },
+  ];
   return (
-    <>
+    <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
       <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
         {!showForm && !editable && (
           <>
             <Button
               type="default"
               onClick={handleShowForm}
-              className="my-4 float-right"
+              className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
             >
               Create new
             </Button>
             <Table
-              columns={[
-                {
-                  title: "Name",
-                  dataIndex: "name",
-                  key: "name",
-                },
-                {
-                  title: "Info",
-                  dataIndex: "info",
-                  key: "info",
-                },
-                {
-                  title: "operation",
-                  dataIndex: "operation",
-                  render: (_: any, record: ManufactureData) =>
-                    manufactureData.length >= 1 ? (
-                      <div className="flex gap-3">
-                        <Button onClick={() => showEditForm(record)}>
-                          edit
-                        </Button>
-
-                        <Popconfirm
-                          title="Sure to delete?"
-                          onConfirm={() => handleDelete(record.key!)}
-                        >
-                          <Button>Delete</Button>
-                        </Popconfirm>
-                      </div>
-                    ) : null,
-                },
-              ]}
+              style={{
+                marginBottom: "10px",
+                boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
+              }}
+              pagination={{ pageSize: 8 }}
+              virtual={true}
+              sticky
+              rowClassName={(_, index) => {
+                return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+              }}
+              columns={columns}
               dataSource={
                 searchedData.length > 0 ? searchedData : manufactureData
               }
@@ -231,7 +241,7 @@ const Manufacturer: React.FC = () => {
           </div>
         )}
       </ConfigProvider>
-    </>
+    </div>
   );
 };
 

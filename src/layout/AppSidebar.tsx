@@ -116,7 +116,8 @@ const AppSidebar: React.FC = () => {
   const { user } = useContext(AuthContext);
 
   // Choose the main navigation items based on the user's role.
-  const mainNavItems = user === "Admin" ? adminNavItems : userNavItems;
+  const mainNavItems =
+    user.toLowerCase() === "admin" ? adminNavItems : userNavItems;
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";

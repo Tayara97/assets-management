@@ -1,5 +1,5 @@
 import { Table, Popconfirm, Button, ConfigProvider, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteTwoTone } from "@ant-design/icons";
 import { useTheme } from "../../context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
@@ -133,8 +133,20 @@ const Users = () => {
     console.log("Failed:", errorInfo);
   };
   return (
-    <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
-      <motion.div>
+    <ConfigProvider
+      theme={
+        theme === "dark"
+          ? darkTheme
+          : {
+              components: {
+                Table: {
+                  headerBg: "#f9fafb",
+                },
+              },
+            }
+      }
+    >
+      <motion.div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
         {contextHolder}
         {!showForm && (
           <>
@@ -146,12 +158,22 @@ const Users = () => {
             value={searchInput}
           /> */}
             <Button
-              className="float-right mb-4"
+              className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
               onClick={() => setShowForm(true)}
             >
               Create new
             </Button>
             <Table
+              style={{
+                marginBottom: "10px",
+                boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
+              }}
+              pagination={{ pageSize: 8 }}
+              virtual={true}
+              sticky
+              rowClassName={(_, index) => {
+                return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+              }}
               columns={[
                 {
                   title: "First Name",
@@ -210,7 +232,7 @@ const Users = () => {
                         console.log("Deleting user:", record.userId);
                       }}
                     >
-                      <DeleteOutlined>Delete</DeleteOutlined>
+                      <DeleteTwoTone twoToneColor="#eb2f96" />
                     </Popconfirm>
                   ),
                 },

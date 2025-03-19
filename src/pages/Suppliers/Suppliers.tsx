@@ -5,7 +5,7 @@ import SupplierForm from "../Suppliers/SupplierForm";
 import { AuthContext } from "../../context/AuthContext";
 import SupplierEditForm from "../Suppliers/SupplierEditForm";
 import { motion, AnimatePresence } from "framer-motion";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { useTheme } from "../../context/ThemeContext";
 const darkTheme = {
   token: {
@@ -35,7 +35,7 @@ interface FormValues {
 
 const Suppliers = () => {
   const [showForm, setShowForm] = useState(false);
-  const [suppliersData, setSuppliersData] = useState<Supplier[]>([]);
+  const [suppliersData, setSuppliersData] = useState<Supplier[]>([{}]);
   const { token } = useContext(AuthContext);
   const [editable, setEditable] = useState(false);
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
@@ -181,12 +181,12 @@ const Suppliers = () => {
       dataIndex: "operation",
       render: (_, record) => (
         <div className="flex gap-5">
-          <EditOutlined onClick={() => showEditForm(record)}>Edit</EditOutlined>
+          <EditTwoTone onClick={() => showEditForm(record)}>Edit</EditTwoTone>
           <Popconfirm
             title="Sure to delete?"
             onConfirm={() => handleDelete(record.key)}
           >
-            <DeleteOutlined>Delete</DeleteOutlined>
+            <DeleteTwoTone twoToneColor="#eb2f96">Delete</DeleteTwoTone>
           </Popconfirm>
         </div>
       ),
@@ -195,17 +195,27 @@ const Suppliers = () => {
 
   return (
     <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
-      <div>
+      <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
         {!showForm && !editable && (
           <>
             <Button
-              className="my-4 float-right"
+              className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
               type="default"
               onClick={handleShowForm}
             >
-              +
+              Create new
             </Button>
             <Table
+              style={{
+                marginBottom: "10px",
+                boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
+              }}
+              pagination={{ pageSize: 8 }}
+              virtual={true}
+              sticky
+              rowClassName={(_, index) => {
+                return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+              }}
               columns={columns}
               dataSource={suppliersData}
               rowKey="key"

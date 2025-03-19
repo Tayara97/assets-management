@@ -176,7 +176,12 @@ const TransferForms: React.FC<TransferFormsProps> = ({
   return (
     <>
       {contextHolder}
-      <Button onClick={() => setShowAllForms(false)}>Back</Button>
+      <Button
+        className="self-start px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
+        onClick={() => setShowAllForms(false)}
+      >
+        Back
+      </Button>
       <div className="flex justify-center gap-8 mt-16">
         <Button onClick={() => setShowForm("user")}>Transfer User</Button>
         <Button onClick={() => setShowForm("location")}>

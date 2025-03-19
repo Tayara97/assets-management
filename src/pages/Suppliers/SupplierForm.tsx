@@ -20,11 +20,6 @@ const SupplierForm = ({
   onFinishFailed,
   onClick,
 }: SupplierFormProps) => {
-  const inputStyle = {
-    borderRadius: "8px",
-    height: "30px",
-    border: "1px solid #d9d9d9",
-  };
   return (
     <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6 ">
       <Button type="default" onClick={onClick} className="self-end">

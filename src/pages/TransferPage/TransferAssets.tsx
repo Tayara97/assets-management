@@ -55,64 +55,76 @@ const TransferAssets: React.FC = () => {
     setSelectedAsset(id);
     setShowAllForms(true);
   };
-
+  const columns = [
+    { title: "Asset Name", dataIndex: "name", key: "name" },
+    {
+      title: "User",
+      dataIndex: "assignedUserName",
+      key: "assignedUserName",
+      sorter: (a: Asset, b: Asset) =>
+        a.assignedUserName.localeCompare(b.assignedUserName),
+    },
+    {
+      title: "Location",
+      dataIndex: "locationName",
+      key: "locationName",
+      sorter: (a: Asset, b: Asset) =>
+        a.locationName.localeCompare(b.locationName),
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (_, record: Asset) => (
+        <Button onClick={() => handleClick(record)}>Transfer</Button>
+      ),
+    },
+  ];
   return (
     <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
-      {!showShowAllForms && (
-        <Table
-          columns={[
-            { title: "Asset Name", dataIndex: "name", key: "name" },
-            {
-              title: "User",
-              dataIndex: "assignedUserName",
-              key: "assignedUserName",
-              sorter: (a: Asset, b: Asset) =>
-                a.assignedUserName.localeCompare(b.assignedUserName),
-            },
-            {
-              title: "Location",
-              dataIndex: "locationName",
-              key: "locationName",
-              sorter: (a: Asset, b: Asset) =>
-                a.locationName.localeCompare(b.locationName),
-            },
-            {
-              title: "Action",
-              dataIndex: "",
-              key: "x",
-              render: (_, record: Asset) => (
-                <Button onClick={() => handleClick(record)}>Transfer</Button>
-              ),
-            },
-          ]}
-          dataSource={tableData}
-          rowKey="key"
-          components={{
-            body: {
-              row: ({ children, ...props }) => (
-                <AnimatePresence>
-                  <motion.tr
-                    {...props}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {children}
-                  </motion.tr>
-                </AnimatePresence>
-              ),
-            },
-          }}
-        />
-      )}
-      {showShowAllForms && selectedAsset && (
-        <TransferForms
-          getAllAssets={getAllAssets}
-          selectedAsset={selectedAsset}
-          setShowAllForms={setShowAllForms}
-        />
-      )}
+      <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
+        {!showShowAllForms && (
+          <Table
+            style={{
+              marginBottom: "10px",
+              boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
+            }}
+            pagination={{ pageSize: 8 }}
+            virtual={true}
+            sticky
+            columns={columns}
+            rowClassName={(_, index) => {
+              return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+            }}
+            dataSource={tableData}
+            rowKey="key"
+            components={{
+              body: {
+                row: ({ children, ...props }) => (
+                  <AnimatePresence>
+                    <motion.tr
+                      {...props}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {children}
+                    </motion.tr>
+                  </AnimatePresence>
+                ),
+              },
+            }}
+          />
+        )}
+        {showShowAllForms && selectedAsset && (
+          <TransferForms
+            getAllAssets={getAllAssets}
+            selectedAsset={selectedAsset}
+            setShowAllForms={setShowAllForms}
+          />
+        )}
+      </div>
     </ConfigProvider>
   );
 };

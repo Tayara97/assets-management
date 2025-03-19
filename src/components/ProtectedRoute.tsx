@@ -12,7 +12,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRole,
 }) => {
   const { isAuthenticated, user } = useContext(AuthContext);
-
   if (!isAuthenticated) {
     return <Navigate to="/signin" replace />;
   }

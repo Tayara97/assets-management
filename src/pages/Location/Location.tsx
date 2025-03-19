@@ -253,9 +253,21 @@ const Location = () => {
   return (
     <>
       {contextHolder}
-      <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+      <ConfigProvider
+        theme={
+          theme === "dark"
+            ? darkTheme
+            : {
+                components: {
+                  Table: {
+                    headerBg: "#f9fafb",
+                  },
+                },
+              }
+        }
+      >
         {!showForm && !editable && (
-          <motion.div>
+          <motion.div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
             <Input
               className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-8 pr-8 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
               placeholder="Search by barcode"
@@ -265,17 +277,26 @@ const Location = () => {
               value={searchInput}
             />
             <Button
-              className="my-4 float-right"
+              className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
               type="default"
               onClick={handleShowForm}
             >
               Create new
             </Button>
             <Table
+              style={{
+                marginBottom: "10px",
+                boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
+              }}
+              pagination={{ pageSize: 8 }}
+              virtual={true}
+              sticky
+              rowClassName={(_, index) => {
+                return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
+              }}
               columns={columns}
               dataSource={filterdData}
               rowKey="key"
-              pagination={{ pageSize: 10 }}
               components={{
                 body: {
                   row: ({ children, ...props }) => (
