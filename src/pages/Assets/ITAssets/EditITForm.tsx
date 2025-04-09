@@ -23,15 +23,15 @@ const EditITForm: React.FC<ItFormProps> = ({
   allUsers,
 }) => {
   return (
-    <div className="flex flex-col items-center w-[800px] gap-8 bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-[#101828] sm:px-6 sm:pt-6 ">
+    <div className="flex flex-col items-center  w-full  bg-white rounded-2xl border border-gray-200 px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-[#101828] sm:px-6 sm:pt-6 ">
       <Button type="default" onClick={onClick} className="self-end">
         X
       </Button>
       <Form
         name="editForm"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
+        className="grid grid-cols-2 gap-8 "
+        labelCol={{ span: 10 }}
+        wrapperCol={{ span: 14 }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -71,7 +71,7 @@ const EditITForm: React.FC<ItFormProps> = ({
           name="PurchaseDate"
           rules={[{ required: true, message: "Please input Purchase Date" }]}
         >
-          <DatePicker />
+          <DatePicker className="w-full" />
         </Form.Item>
         <Form.Item
           label="Depreciation Date"
@@ -80,14 +80,14 @@ const EditITForm: React.FC<ItFormProps> = ({
             { required: true, message: "Please input Depreciation Date" },
           ]}
         >
-          <DatePicker />
+          <DatePicker className="w-full" />
         </Form.Item>
         <Form.Item
           label="Purchase Price"
           name="PurchasePrice"
           rules={[{ required: true, message: "Please input Purchase Price" }]}
         >
-          <InputNumber className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-transparent dark:border-[#434343]" />
+          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-transparent dark:border-[#434343]" />
         </Form.Item>
         <Form.Item
           label="Warranty"
@@ -108,7 +108,7 @@ const EditITForm: React.FC<ItFormProps> = ({
             }),
           ]}
         >
-          <DatePicker />
+          <DatePicker className="w-full" />
         </Form.Item>
         <Form.Item label="Description" name="dicription">
           <Input.TextArea />
@@ -162,7 +162,13 @@ const EditITForm: React.FC<ItFormProps> = ({
           />
         </Form.Item>
         <Form.Item label="Status" name="Status">
-          <Select options={[{ value: "Active", label: "Active" }]} />
+          <Select
+            options={[
+              { value: "Active", label: "Active" },
+              { value: "InRepair", label: "InRepair" },
+              { value: "Retired", label: "Retired" },
+            ]}
+          />
         </Form.Item>
         <Form.Item label={null}>
           <Button type="primary" htmlType="submit">

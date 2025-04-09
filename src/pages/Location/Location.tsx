@@ -8,7 +8,7 @@ import {
 } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import { useContext, useEffect, useState, useMe } from "react";
+import { useContext, useEffect, useState } from "react";
 import LocationForm from "../Location/LocationForm";
 import { AuthContext } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -289,7 +289,6 @@ const Location = () => {
                 boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
               }}
               pagination={{ pageSize: 8 }}
-              virtual={true}
               sticky
               rowClassName={(_, index) => {
                 return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";

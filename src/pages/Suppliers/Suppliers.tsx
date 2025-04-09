@@ -172,9 +172,9 @@ const Suppliers = () => {
       sorter: (a: Supplier, b: Supplier) =>
         a.companyName.localeCompare(b.companyName),
     },
-    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Email", dataIndex: "email", key: "email", width: 300 },
     { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Address", dataIndex: "address", key: "address" },
+    { title: "Address", dataIndex: "address", key: "address", width: 300 },
     { title: "Note", dataIndex: "note", key: "note" },
     {
       title: "Operation",
@@ -211,7 +211,6 @@ const Suppliers = () => {
                 boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
               }}
               pagination={{ pageSize: 8 }}
-              virtual={true}
               sticky
               rowClassName={(_, index) => {
                 return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";

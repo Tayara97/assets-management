@@ -382,7 +382,7 @@ const ItAssets: React.FC = () => {
     }
   };
   return (
-    <motion.div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
+    <motion.div className="flex flex-col gap-1 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
       {contextHolder}
       {showForm && (
         <ConfigProvider theme={theme === "dark" ? darkTheme : {}}>
@@ -416,7 +416,7 @@ const ItAssets: React.FC = () => {
                 : {
                     components: {
                       Table: {
-                        headerBg: "#f9fafb",
+                        headerBg: "#edebeb",
                       },
                     },
                   }
@@ -428,7 +428,6 @@ const ItAssets: React.FC = () => {
                 boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
               }}
               pagination={{ pageSize: 8 }}
-              virtual={true}
               sticky
               showHeader
               rowClassName={(_, index) => {
@@ -460,21 +459,20 @@ const ItAssets: React.FC = () => {
                   width: 150,
                   dataIndex: "modelNumber",
                   key: "modelNumber",
-                  sorter: (a: Asset, b: Asset) =>
-                    a.modelNumber.localeCompare(b.modelNumber),
                 },
                 {
                   title: "Serial Number",
                   width: 150,
                   dataIndex: "serialNumber",
                   key: "serialNumber",
-                  sorter: (a: Asset, b: Asset) =>
-                    a.serialNumber.localeCompare(b.serialNumber),
                 },
                 {
                   title: "Purchase Date",
                   dataIndex: "purchaseDate",
+                  width: 140,
                   key: "purchaseDate",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.purchaseDate.localeCompare(b.purchaseDate),
                 },
                 {
                   title: "Purchase Price",
@@ -486,6 +484,8 @@ const ItAssets: React.FC = () => {
                   align: "center",
                   dataIndex: "warrantyExpiryDate",
                   key: "warrantyExpiryDate",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.warrantyExpiryDate.localeCompare(b.warrantyExpiryDate),
                 },
                 {
                   title: "Assigned to",
@@ -507,6 +507,8 @@ const ItAssets: React.FC = () => {
                   title: "Location",
                   dataIndex: "locationName",
                   key: "locationName",
+                  sorter: (a: Asset, b: Asset) =>
+                    a.locationName.localeCompare(b.locationName),
                   filters: allLocations.map((location) => {
                     return { text: location.name, value: location.name };
                   }),
@@ -527,7 +529,7 @@ const ItAssets: React.FC = () => {
                         color={
                           record?.status.toLocaleLowerCase() === "active"
                             ? "success"
-                            : record?.status.toLowerCase() === "pending"
+                            : record?.status.toLowerCase() === "inrepair"
                             ? "warning"
                             : "error"
                         }

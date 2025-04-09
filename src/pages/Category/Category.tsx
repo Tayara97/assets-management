@@ -50,6 +50,7 @@ const Category: React.FC = () => {
         }
       );
 
+      console.log(response);
       if (response.status === 409) {
         message.error("category already exist");
         return;
@@ -57,7 +58,6 @@ const Category: React.FC = () => {
       if (!response.ok) {
         throw new Error("Failed to save data to the backend");
       }
-
       setShowCategoryForm(false);
       getAllCategory();
     } catch (error) {
@@ -202,7 +202,6 @@ const Category: React.FC = () => {
               boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
             }}
             pagination={{ pageSize: 8 }}
-            virtual={true}
             sticky
             rowClassName={(_, index) => {
               return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
