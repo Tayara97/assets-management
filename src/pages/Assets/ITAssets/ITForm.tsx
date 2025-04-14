@@ -129,6 +129,7 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input location" }]}
         >
           <Select
+            placeholder="Select Location"
             options={allLocations.map((obj) => ({
               label: obj.name,
               value: obj.id,
@@ -141,6 +142,7 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input Manufacturer" }]}
         >
           <Select
+            placeholder="Select Manufacturer"
             options={allManufacturers.map((obj) => ({
               label: obj.name,
               value: obj.id,
@@ -153,6 +155,7 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input user" }]}
         >
           <Select
+            placeholder="Select User"
             options={allUsers.map((obj) => ({
               label: obj.firstName,
               value: obj.userId,
@@ -165,6 +168,7 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input supplier" }]}
         >
           <Select
+            placeholder="Select Supplier"
             options={suppliers.map((obj) => ({
               label: obj.email,
               value: obj.id,
@@ -177,6 +181,7 @@ const ItForm: React.FC<ItFormProps> = ({
           rules={[{ required: true, message: "Please input Status" }]}
         >
           <Select
+            placeholder="Select Status"
             options={[
               { value: "Active", label: "Active" },
               { value: "InRepair", label: "InRepair" },

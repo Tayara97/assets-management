@@ -90,8 +90,8 @@ const TransferAssets: React.FC = () => {
               boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
             }}
             pagination={{ pageSize: 8 }}
-            virtual={true}
             sticky
+            scroll={{ x: "max-content" }}
             columns={columns}
             rowClassName={(_, index) => {
               return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";

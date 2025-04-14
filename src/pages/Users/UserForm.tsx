@@ -101,6 +101,7 @@ const UserForm: React.FC<UserFormProps> = ({
         >
           <Select
             style={{ width: 120 }}
+            placeholder="Select Role"
             options={[
               {
                 value: "user",

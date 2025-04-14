@@ -35,7 +35,7 @@ interface FormValues {
 
 const Suppliers = () => {
   const [showForm, setShowForm] = useState(false);
-  const [suppliersData, setSuppliersData] = useState<Supplier[]>([{}]);
+  const [suppliersData, setSuppliersData] = useState<Supplier[]>([]);
   const { token } = useContext(AuthContext);
   const [editable, setEditable] = useState(false);
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
@@ -97,14 +97,13 @@ const Suppliers = () => {
 
       if (!response.ok) throw new Error("Failed to get data from the backend");
 
-      const data = (await response.json()) as Array<Omit<Supplier, "key">>;
+      const data = await response.json();
       const suppliersWithKeys = data.map((item) => ({ ...item, key: item.id }));
       setSuppliersData(suppliersWithKeys);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
   useEffect(() => {
     getAllSuppliers();
   }, [token]);
@@ -212,6 +211,7 @@ const Suppliers = () => {
               }}
               pagination={{ pageSize: 8 }}
               sticky
+              scroll={{ x: "max-content" }}
               rowClassName={(_, index) => {
                 return index % 2 === 0 ? "" : "bg-[#f9fafb] dark:bg-gray-700";
               }}

@@ -84,16 +84,9 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              Asset Management
+            </h1>
           </Link>
 
           <button
