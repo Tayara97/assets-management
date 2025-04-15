@@ -16,7 +16,7 @@ import Manufacturer from "./pages/Manufacturer/Manufacturer";
 import UserDashboard from "./pages/userPages/UserDashboard";
 import AssetsTransferRequest from "./pages/userPages/AssetsTransferRequest";
 import AssignedAssets from "./pages/userPages/AssignedAssets";
-import MaintenanceRequest from "./pages/userPages/MaintenanceRequest";
+import MaintenanceRequest from "./pages/MaintenanceRequest/MaintenanceRequest";
 import UnauthorizedPage from "./pages/UnAuthorizedPage";
 
 export default function App() {
@@ -68,6 +68,14 @@ export default function App() {
               element={
                 <ProtectedRoute requiredRole="admin">
                   <TransferAssets />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/maintenancerequest"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <MaintenanceRequest />
                 </ProtectedRoute>
               }
             />

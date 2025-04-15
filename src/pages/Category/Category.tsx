@@ -50,7 +50,6 @@ const Category: React.FC = () => {
         }
       );
 
-      console.log(response);
       if (response.status === 409) {
         message.error("category already exist");
         return;

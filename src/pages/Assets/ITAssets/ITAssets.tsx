@@ -428,7 +428,6 @@ const ItAssets: React.FC = () => {
                 boxShadow: "rgba(0, 0, 0, 0.1) -4px 10px 14px 4px",
               }}
               pagination={{ pageSize: 8 }}
-              sticky
               showHeader
               scroll={{ x: "max-content" }}
               rowClassName={(_, index) => {
@@ -457,20 +456,18 @@ const ItAssets: React.FC = () => {
                 },
                 {
                   title: "Model Number",
-                  width: 150,
+
                   dataIndex: "modelNumber",
                   key: "modelNumber",
                 },
                 {
                   title: "Serial Number",
-                  width: 150,
                   dataIndex: "serialNumber",
                   key: "serialNumber",
                 },
                 {
                   title: "Purchase Date",
                   dataIndex: "purchaseDate",
-                  width: 140,
                   key: "purchaseDate",
                   sorter: (a: Asset, b: Asset) =>
                     a.purchaseDate.localeCompare(b.purchaseDate),
@@ -490,7 +487,7 @@ const ItAssets: React.FC = () => {
                 },
                 {
                   title: "Assigned to",
-                  width: 150,
+
                   dataIndex: "assignedUserName",
                   key: "assignedUserName",
                   sorter: (a: Asset, b: Asset) =>

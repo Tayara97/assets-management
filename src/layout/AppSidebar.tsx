@@ -79,6 +79,11 @@ const adminNavItems: NavItem[] = [
     path: "/suppliers",
   },
   {
+    icon: <CheckCircleIcon />,
+    name: "Maintenance Request",
+    path: "/maintenancerequest",
+  },
+  {
     icon: (
       <svg
         className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"

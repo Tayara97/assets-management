@@ -157,7 +157,7 @@ const ItForm: React.FC<ItFormProps> = ({
           <Select
             placeholder="Select User"
             options={allUsers.map((obj) => ({
-              label: obj.firstName,
+              label: `${obj.firstName} ${obj.lastName}`,
               value: obj.userId,
             }))}
           />
@@ -170,7 +170,7 @@ const ItForm: React.FC<ItFormProps> = ({
           <Select
             placeholder="Select Supplier"
             options={suppliers.map((obj) => ({
-              label: obj.email,
+              label: obj.companyName,
               value: obj.id,
             }))}
           />
