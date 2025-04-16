@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, Input, Select } from "antd";
 
-const MaintenanceRequestForm = ({
+const MaintenanceEditForm = ({
   onClick,
   onFinish,
   usersData,
@@ -25,22 +25,9 @@ const MaintenanceRequestForm = ({
         labelCol={{ span: 12 }}
         wrapperCol={{ span: 12 }}
         onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
         autoComplete="off"
+        style={{ width: "400px" }}
       >
-        <Form.Item
-          label="Asset Serial Number"
-          name="assetSerialNumber"
-          rules={[
-            {
-              required: true,
-              message: "Please input Asset Serial Number ",
-            },
-          ]}
-        >
-          <Input className=" border-[#d9d9d9] rounded-lg h-8 dark:bg-[#202a3f] dark:border-[#434343]" />
-        </Form.Item>
-
         <Form.Item
           label="Maintenance Date"
           name="maintenanceDate"
@@ -107,4 +94,4 @@ const MaintenanceRequestForm = ({
   );
 };
 
-export default MaintenanceRequestForm;
+export default MaintenanceEditForm;

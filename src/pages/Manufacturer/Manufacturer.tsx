@@ -193,7 +193,19 @@ const Manufacturer: React.FC = () => {
   ];
   return (
     <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
-      <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+      <ConfigProvider
+        theme={
+          theme === "dark"
+            ? darkTheme
+            : {
+                components: {
+                  Table: {
+                    headerBg: "#edebeb",
+                  },
+                },
+              }
+        }
+      >
         {!showForm && !editable && (
           <>
             <Button

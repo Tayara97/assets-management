@@ -260,7 +260,7 @@ const Location = () => {
             : {
                 components: {
                   Table: {
-                    headerBg: "#f9fafb",
+                    headerBg: "#edebeb",
                   },
                 },
               }

@@ -1,12 +1,13 @@
 import { Table, Popconfirm, Button, ConfigProvider, message } from "antd";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { EditTwoTone } from "@ant-design/icons";
 import { useTheme } from "../../context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../../context/AuthContext";
 import MaintenanceRequestForm from "./MaintenanceRequestForm";
-import { Form } from "react-router";
+import MaintenanceEditForm from "./MaintenanceEditForm";
+
 const darkTheme = {
   token: {
     colorBgContainer: "#202a3f",
@@ -19,10 +20,11 @@ const MaintenanceRequest = () => {
   const { token } = useContext(AuthContext);
   const { theme } = useTheme();
   const [messageApi, contextHolder] = message.useMessage();
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState("");
   const [usersData, setUsersData] = useState([]);
   const [suppliersData, setSuppliersData] = useState([]);
   const [maintenanceData, setmaintenanceData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState({});
 
   const getMaintenanceRequest = async () => {
     try {
@@ -104,40 +106,37 @@ const MaintenanceRequest = () => {
     getMaintenanceRequest();
   }, []);
   const onFinish = async (values) => {
+    console.log(values);
     messageApi.destroy();
     const formattedValues = {
       ...values,
       maintenanceDate: values.maintenanceDate?.format("YYYY-MM-DD"),
     };
-    console.log(formattedValues);
-    const formData = new FormData();
-    formData.append("assetSerialNumber", formattedValues.assetSerialNumber);
-    formData.append("maintenanceDate", formattedValues.maintenanceDate);
-    formData.append("description", formattedValues.description);
-    formData.append("toWhomOfUserId", formattedValues.toWhomOfUserId);
-    formData.append("toWhomOfSupplierId", formattedValues.toWhomOfSupplierId);
+
     try {
       const response = await fetch(
         "http://localhost:5243/api/AssetMaintenance/AddMaintenanceRecord/AddMaintenanceRecord",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "content-type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(formattedValues),
         }
       );
       if (!response.ok) {
         const error = await response.json();
+
         messageApi.open({
           type: "error",
-          content: error.error,
+          content: error.message,
 
           style: {
             marginTop: "10vh",
           },
         });
+        return;
       }
 
       messageApi.open({
@@ -148,12 +147,62 @@ const MaintenanceRequest = () => {
           marginTop: "10vh",
         },
       });
-      // setShowForm(false);
+      getMaintenanceRequest();
+      setShowForm("");
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleEditForm = async (values) => {
+    messageApi.destroy();
+    const formattedValues = {
+      ...values,
+      maintenanceDate: values.maintenanceDate?.format("YYYY-MM-DD"),
+      id: selectedItem.id,
+    };
+    console.log(formattedValues);
+    try {
+      const response = await fetch(
+        "http://localhost:5243/api/AssetMaintenance/UpdateMaintenanceRecord/UpdateMaintenanceRecord",
+        {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formattedValues),
+        }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+
+        messageApi.open({
+          type: "error",
+          content: error.message,
+
+          style: {
+            marginTop: "10vh",
+          },
+        });
+        return;
+      }
+
+      messageApi.open({
+        type: "success",
+        content: "Maintenance request updated successfully",
+
+        style: {
+          marginTop: "10vh",
+        },
+      });
+      getMaintenanceRequest();
+      setShowForm("");
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ConfigProvider
       theme={
@@ -174,7 +223,7 @@ const MaintenanceRequest = () => {
           <>
             <Button
               className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"
-              onClick={() => setShowForm(true)}
+              onClick={() => setShowForm("create")}
             >
               Create new
             </Button>
@@ -222,21 +271,18 @@ const MaintenanceRequest = () => {
                   title: "User name",
                   dataIndex: "toWhomOfUserName",
                 },
-                // {
-                //   title: "Operation",
-                //   dataIndex: "operation",
-                //   render: (_: any, record: User) => (
-                //     <Popconfirm
-                //       title="Sure to delete?"
-                //       onConfirm={() => {
-                //         // Implement delete logic here
-                //         console.log("Deleting user:", record.userId);
-                //       }}
-                //     >
-                //       <DeleteTwoTone twoToneColor="#eb2f96" />
-                //     </Popconfirm>
-                //   ),
-                // },
+                {
+                  title: "Operation",
+                  dataIndex: "operation",
+                  render: (_, record) => (
+                    <EditTwoTone
+                      onClick={() => {
+                        setShowForm("edit");
+                        setSelectedItem(record);
+                      }}
+                    />
+                  ),
+                },
               ]}
               dataSource={maintenanceData}
               components={{
@@ -259,16 +305,24 @@ const MaintenanceRequest = () => {
             />
           </>
         )}
-        {showForm && (
+        {showForm === "create" && (
           <div className="flex flex-col items-center">
             <MaintenanceRequestForm
               onFinish={onFinish}
               usersData={usersData}
               suppliersData={suppliersData}
               // onFinishFailed={onFinishFailed}
-              onClick={() => setShowForm(false)}
+              onClick={() => setShowForm("")}
             />
           </div>
+        )}
+        {showForm === "edit" && (
+          <MaintenanceEditForm
+            onFinish={handleEditForm}
+            usersData={usersData}
+            suppliersData={suppliersData}
+            onClick={() => setShowForm("")}
+          />
         )}
       </motion.div>
     </ConfigProvider>

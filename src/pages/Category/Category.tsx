@@ -176,7 +176,19 @@ const Category: React.FC = () => {
   ];
   return (
     <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
-      <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+      <ConfigProvider
+        theme={
+          theme === "dark"
+            ? darkTheme
+            : {
+                components: {
+                  Table: {
+                    headerBg: "#edebeb",
+                  },
+                },
+              }
+        }
+      >
         {!showCategoryForm && (
           <Button
             className="self-end px-3 py-2 font-medium  rounded-md text-theme-sm hover:text-gray-900   dark:hover:text-white shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-28"

@@ -193,7 +193,19 @@ const Suppliers = () => {
   ];
 
   return (
-    <ConfigProvider theme={theme === "dark" ? darkTheme : ""}>
+    <ConfigProvider
+      theme={
+        theme === "dark"
+          ? darkTheme
+          : {
+              components: {
+                Table: {
+                  headerBg: "#edebeb",
+                },
+              },
+            }
+      }
+    >
       <div className="flex flex-col gap-5 items-center p-5 dark:bg-gray-800 bg-white rounded-md">
         {!showForm && !editable && (
           <>
